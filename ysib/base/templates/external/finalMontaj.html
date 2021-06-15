@@ -1,0 +1,324 @@
+{% load static %}
+{% block manometre %}
+<style>
+  .gerisayim{
+    list-style: none;
+    display: block;
+  }
+  .gerisayim li{
+    display: inline-block;
+    padding: 10px;
+    background: lightgray;
+    font-size: 24px;
+  }
+  .glyphicon-ok{
+    float: right;
+    color: green;
+  }
+  .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+    float: right;
+  }
+  #adimlar li span {
+    float: right;
+
+  }
+  @-webkit-keyframes spin2 {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+  }
+
+  @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+  }
+</style>
+<div class="row">
+  <div class="row pl-4 col-md-10">
+    <button type="button" class="btn btn-primary mb-2" style="height: 34px" id="FinalMontaj_Baglan">Baglan</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-7">
+        <form class="col-md-12">
+          <div class="form-inline">
+              <div class="form-group mb-2 col-lg-4 col-md-12">
+                <span>Valf Seri Numarası :</span>
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" onkeyup="controlFinalid(event,this)" id="vsno">
+              </div>
+            </div>
+
+            <div class="form-inline">
+              <div class="form-group mb-2 col-lg-4 col-md-12">
+                <span>Ürün Seri Numarası :</span>
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" id="etiket_seri_no">
+              </div>
+            </div>
+
+            <div class="form-inline">
+              <div class="form-group mb-2 col-lg-4 col-md-12">
+                <span>Fünye Seri Numarası :</span>
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" id="fsn">
+              </div>
+            </div>
+
+            <div class="form-inline">
+              <div class="form-group mb-2 col-lg-4 col-md-12">
+                <span>Fünye Seri Omaj :</span>
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" id="funye_seri_omaj">
+              </div>
+            </div>
+
+            <div class="form-inline">
+              <div class="form-group mb-2 col-lg-4 col-md-12">
+                <span>Basınç Anahtarı Omaj :</span>
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" id="basinc_anahtari_omaj">
+              </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="col-md-5">
+        <h3 class="text-center" style="text-indent: -106px;">Ağırlık</h3>
+        <div class="indicator-cont" style="padding:0 10px;width:50%;margin:0 26px 0;"><span class="indicator" id="FinalMontaj_weight">00</span><span class="birim" id="FinalMontaj_WeightUnit">kg</span></div>
+    </div>
+</div>
+<hr>
+<div class="col-md-4 mx-auto"><button type="button" class="btn btn-success btn-lg btn-block" id="kaydetFinalMontaj">KAYDET</button></div>
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/sweetalert2.min.js' %}"></script>
+
+
+
+
+
+<script>
+  let final_kydt = document.getElementById('kaydetFinalMontaj');
+  final_kydt.disabled =  true;
+  let btn_FinalMontaj_Baglan = document.getElementById('FinalMontaj_Baglan');
+  let txt_FinalMontaj_weight = document.getElementById('FinalMontaj_weight');
+  let txt_FinalMontaj_WeightUnit = document.getElementById('FinalMontaj_WeightUnit');
+
+  var Timer_FinalMontaj_getWeight;
+
+
+
+  //******************** Final Montaj Bağlan *********************
+  document.getElementById('FinalMontaj_Baglan').addEventListener('click', function(e){
+      let el = e.target;
+      el.disabled = true;
+      el.innerHTML = "Bağlanıyor...";
+      console.log("Final Montaj tartıya bağlanıyor...");
+      
+      $.ajax({
+          type: "POST",
+          url: 'http://localhost:5000/FinalMontaj_baglan',
+          timeout: 3000,
+          success: function(x){
+              if(x == 'success'){
+                  console.log("Final Montaj tartıya bağlandı.");
+                  toastr["success"]("Tartı'ya bağlandı");
+                  el.innerHTML = "Bağlandı";
+                  btn_FinalMontaj_Baglan.disabled = true;
+
+                  Timer_FinalMontaj_getWeight = setInterval(Timer_FinalMontaj_getWeight_EventHandler, 500);
+              }
+              else if(x == 'fail'){
+                  console.log("Final montaj tartıya bağlanamadı!");
+                  toastr["error"]("Tartı'ya bağlanamadı!");
+                  el.disabled = false;
+                  el.innerHTML = "Bağlan";
+              }
+          },
+          error: function(jqXHR, textStatus){
+              if(textStatus === 'timeout'){
+                  toastr["warning"]("Bağlantı, zaman aşımına uğradı!\nUygulamanın çalışır durumda olduğunundan emin olunuz.");
+              }
+              else if(textStatus === 'error'){
+                  toastr["warning"]("Bağlantı hatası!\nUygulamanın çalışır durumda olduğunundan emin olunuz.");
+              }
+              el.disabled = false;
+              el.innerHTML = 'Bağlan';
+              
+              console.log(jqXHR);
+          }
+      });
+  });
+
+
+  function Timer_FinalMontaj_getWeight_EventHandler(){
+    $.ajax({
+        type: "POST",
+        url: 'http://localhost:5000/FinalMontaj_getWeight',
+        timeout: 5000,
+        success: function (x){
+            console.log(x);
+            if(typeof x['Weight'] == "undefined"){
+                toastr["error"]("Bağlantı hatası!\nTartı'nın bağlı olduğundan emin olunuz!");
+                btn_FinalMontaj_Baglan.disabled = false;
+                btn_FinalMontaj_Baglan.innerHTML = 'Bağlan'
+                clearInterval(Timer_FinalMontaj_getWeight); 
+            }
+            else{
+                txt_FinalMontaj_weight.innerText = x['Weight'];
+                txt_FinalMontaj_WeightUnit.innerHTML = x['weightUnit'];
+            }
+
+
+            if(x['Connected'] == false){
+              toastr["error"]("Bağlantı hatası!\nTartı'nın bağlı olduğundan emin olunuz!");
+              btn_FinalMontaj_Baglan.disabled = false;
+              btn_FinalMontaj_Baglan.innerHTML = 'Bağlan'
+              clearInterval(Timer_FinalMontaj_getWeight);
+            }
+        },
+        error: function(jqXHR, textStatus){
+            if(textStatus === 'timeout'){
+                toastr["warning"]("Bağlantı, zaman aşımına uğradı!\nUygulamanın çalışır durumda olduğunundan emin olunuz.");
+            }
+            else if(textStatus === 'error'){
+                toastr["error"]("Bağlantı hatası!\nUygulamanın çalışır durumda olduğunundan emin olunuz.");
+            }
+            
+            btn_FinalMontaj_Baglan.disabled = false;
+            btn_FinalMontaj_Baglan.innerHTML = 'Bağlan'
+            clearInterval(Timer_FinalMontaj_getWeight);
+
+            console.log(jqXHR);
+        }
+    });
+  }
+
+
+
+
+  document.getElementById('kaydetFinalMontaj').addEventListener('click',function(e){
+    e.preventDefault();
+    Swal.showLoading();
+    
+
+    vsn = document.getElementById("vsno").value;
+    etiket = document.getElementById("etiket_seri_no").value;
+  
+    fsn = document.getElementById("fsn").value;
+
+    fso = document.getElementById("funye_seri_omaj").value;
+     
+    bao = document.getElementById("basinc_anahtari_omaj").value;
+    
+
+    let data = {
+      vsn:vsn ,etiket:etiket, fsn:fsn,fso:fso,bao:bao
+    }
+    $.ajax({
+          type: "POST",
+          url: '/finalmontajsave',
+          data : data,
+          success: function (resp){
+            if(resp['code']==200){
+            console.log(resp)
+            Swal.fire({
+              title: 'Başarılı!',
+              text: resp['remark'],
+              icon: 'success',
+              confirmButtonText: 'Tamam'
+            })
+          }
+          else if(resp['code']==201){
+            Swal.fire({
+              title: 'Başarılı!',
+              text: resp['remark'],
+              icon: 'info',
+              confirmButtonText: 'Tamam'
+            })
+            
+
+          }
+          else if(resp['code']==500){
+            Swal.fire({
+              title: 'Başarısız!',
+              text: resp['remark'],
+              icon: 'warning',
+              confirmButtonText: 'Tamam'
+            })
+          }
+        },
+          error(err){
+            console.log;(err);
+          }
+        }
+      );
+  });
+  function StringisNullOrEmpty(value){
+      value = value.trim();
+      return (!value || value == undefined || value === "" || value.length == 0);
+  }
+
+
+  function controlFinalid(e,el){
+    console.log('tuşa basıldı ',e.keyCode)
+    // console.log(StringisNullOrEmpty(e.target.value))
+    if(StringisNullOrEmpty(e.target.value)){
+      final_kydt.disabled = false;
+    }
+
+		if ( e.target.value) {
+            new Promise(function(resolve,reject){
+              let data = {
+              "veri" : e.target.value
+              }
+              
+            $.ajax({
+                  type: "POST",
+                  url: '/finalmontajcontrol',
+                  data : data,
+                  success: function (resp){
+                    if(resp['code'] == 200){
+                     
+                        toastr['success'](resp['remark']);
+                        final_kydt.disabled = false;
+                        
+                    }else if(resp['code'] == 201)
+                    {
+                   
+                      toastr["info"](resp['remark']);
+                      final_kydt.disabled = true;
+                      
+                    }else if(resp['code'] == 400)
+                     {
+                      final_kydt.disabled = true;
+                      toastr["warning"](resp['remark']);
+                     
+                    }else if(resp['code'] == 500){
+                      final_kydt.disabled = true;
+                      toastr["warning"](resp['remark']);
+                    }
+
+                  },
+                    error(err){
+                      console.log(err);
+                      return;
+                    }
+              });
+          }).then(function(r){
+
+          }).catch(function(err){
+            console.log(err)
+          })
+	    }
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,617 @@
+{% load static %}
+<style>
+  .gerisayim{
+    list-style: none;
+    display: block;
+  }
+  .gerisayim li{
+    display: inline-block;
+    padding: 10px;
+    background: lightgray;
+    font-size: 24px;
+  }
+  .acma,.kapatma{
+    user-select:none;
+    pointer-events: none;
+  }
+  .glyphicon{
+    float: right;
+  }
+  .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+    float: right;
+  }
+  #adimlar li span {
+    float: right;
+
+  }
+  @-webkit-keyframes spin2 {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+  }
+
+  @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+  }
+  .indicator-cont{
+    width: 100%;
+    border-radius: 5px;
+    font-weight: 500;
+    border: 2px solid black;
+    /*background: ;*/
+    height: 40px;
+    line-height: 34px;
+    font-size: 18px;
+    color: #000;
+    padding: 0 6px;
+  }
+  .birim{
+    float: right;
+  }
+</style>
+{% block manometre %}
+
+
+<div class="row">
+  <form class="col-md-12" >
+    <div id="addableField">
+        <div class="form-row">
+          <div class="col-md-2 text-center" >Seri no</div>
+          <div class="col-md-2 text-center">Uygun</div>
+          <div class="col-md-2 text-center">Uygun değil</div>
+          <div class="col-md-2 text-center">Açma</div>
+          <div class="col-md-2 text-center">Kapatma</div>
+          <div class="col-md-2 text-center">Sebep</div>
+          
+            
+            <div>
+              
+            </div>
+        </div>
+      </div>
+  
+  
+  </form>
+  <form class="col-md-12" onsubmit = "event.preventDefault();" id="TestForm" class="valfTestForm" enctype="multipart/form-data">
+  
+    <!--1. Satır-->
+    <div id="addableField">
+        <div class="form-row">
+        
+            
+            <div class="form-group col-md-2">
+                <input type="text" class="form-control addInput" id="valf_seri_no_1" onkeyup="addSubmitTest(event,this)" name="vsn">
+                <p class="invalid-feedback">
+                  <strong>Bu seri nolu valfin montaj kürlenmesi tamamlanmadı!</strong>
+                </p>
+            </div>
+            <div class="form-group col-md-2 text-center">
+                <input  name="durum1" id="testuygun1" value="True" type="radio" checked>
+            </div>
+            <div class="form-group col-md-2 text-center">
+                <input   id="testuygundegil1"  type="radio">
+            </div>
+            <div class="form-group col-md-2">
+                <input  name="Açma" type="text" class="form-control" id="ValfTest_acma_1">
+             
+            </div>
+            <div class="form-group col-md-2">
+                <input  name="Kapama" type="text" class="form-control" id="ValfTest_kapama_1">
+            </div>
+            <div class="form-group col-md-2 text-center">
+                <select name="sebep" class="form-control" id="ValfTest_sebeb_1">
+                  <option>Alt-Üst Nipel arası Kaçak</option>
+                  <option>Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                  <option>Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                  <option>Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                  <option>Baçınç Anahtarı Açma Değeri Hatalı</option>
+                  <option>Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                  <option>Manometre Alt Nipel Arası Kaçak</option>
+                  <option>Sibop Alt Nipel Arası Kaçak</option>
+                </select>
+            </div>
+            <div>
+              
+            </div>
+        </div>
+    </div>
+     
+    <!--2. Satır-->
+    <div id="addableField">
+      <div class="form-row">
+      
+        
+          <div class="form-group col-md-2">
+              <input type="text" class="form-control addInput" id="valf_seri_no_2" onkeyup="addSubmitTest(event,this)" name="vsn">
+              <p class="invalid-feedback">
+                <strong>Bu seri nolu valfin montaj kürlenmesi tamamlanmadı!</strong>
+              </p>
+          </div>
+          <div class="form-group col-md-2 text-center">
+              <input name="durum2" id="testuygun2" value="True"  data-degil="true" type="radio" checked>
+          </div>
+          <div class="form-group col-md-2 text-center">
+              <input   id="testuygundegil2"  type="radio">
+          </div>
+          <div class="form-group col-md-2">
+            <input  name="Açma" type="text" class="form-control" id="ValfTest_acma_2">
+         
+        </div>
+        <div class="form-group col-md-2">
+            <input  name="Kapama" type="text" class="form-control" id="ValfTest_kapama_2">
+        </div>
+          <div   class="form-group col-md-2 text-center">
+              <select  name="sebep" class="form-control" id="ValfTest_sebeb_2">
+                <option>Alt-Üst Nipel arası Kaçak</option>
+                <option>Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option>Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option>Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option>Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option>Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option>Manometre Alt Nipel Arası Kaçak</option>
+                <option>Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+          <div>
+            
+          </div>
+      </div>
+  </div>
+    
+  <!--3. Satır-->
+  <div id="addableField">
+    <div class="form-row">
+    
+      
+        <div class="form-group col-md-2">
+            <input type="text" class="form-control addInput" id="valf_seri_no_3" onkeyup="addSubmitTest(event,this)" name="vsn">
+            <p class="invalid-feedback">
+              <strong>Bu seri nolu valfin montaj kürlenmesi tamamlanmadı!</strong>
+            </p>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input name="durum3" id="testuygun3" value="True"  data-degil="true" type="radio" checked>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input  id="testuygundegil3"  type="radio">
+        </div>
+        <div class="form-group col-md-2">
+          <input  name="Açma" type="text" class="form-control" id="ValfTest_acma_3">
+       
+      </div>
+      <div class="form-group col-md-2">
+          <input  name="Açıklama" type="text" class="form-control" id="ValfTest_kapama_3">
+      </div>
+        <div  class="form-group col-md-2 text-center">
+            <select   name="sebep" class="form-control" id="ValfTest_sebeb_3">
+              <option>Alt-Üst Nipel arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option>Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option>Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option>Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option>Manometre Alt Nipel Arası Kaçak</option>
+              <option>Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+        <div>
+          
+        </div>
+    </div>
+  </div>
+  
+  <!--4. Satır-->
+  <div id="addableField">
+    <div class="form-row">
+    
+      
+        <div class="form-group col-md-2">
+            <input type="text" class="form-control addInput" id="valf_seri_no_4" onkeyup="addSubmitTest(event,this)" name="vsn">
+            <p class="invalid-feedback">
+              <strong>Bu seri nolu valfin montaj kürlenmesi tamamlanmadı!</strong>
+            </p>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input name="durum4" id="testuygun4" value="True"  data-degil="true" type="radio" checked>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input  id="testuygundegil4"  type="radio">
+        </div>
+           <div class="form-group col-md-2">
+                <input  name="Açma" type="text" class="form-control" id="ValfTest_acma_4"> 
+            </div>
+            <div class="form-group col-md-2">
+                <input  name="Kapama" type="text" class="form-control" id="ValfTest_kapama_4">
+            </div>
+        <div name="sebep" class="form-group col-md-2 text-center" >
+            <select  name="sebep" class="form-control" id="ValfTest_sebeb_4">
+              <option>Alt-Üst Nipel arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option>Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option>Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option>Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option>Manometre Alt Nipel Arası Kaçak</option>
+              <option>Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+        <div>
+          
+        </div>
+    </div>
+  </div>
+  
+  <!--5. Satır-->
+  <div id="addableField">
+    <div class="form-row">
+    
+      
+        <div class="form-group col-md-2">
+            <input type="text" class="form-control addInput" id="valf_seri_no_5" onkeyup="addSubmitTest(event,this)" name="vsn">
+            <p class="invalid-feedback">
+              <strong>Bu seri nolu valfin montaj kürlenmesi tamamlanmadı!</strong>
+            </p>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input  name="durum5" id="testuygun5" value="True"  data-degil="true" type="radio" checked>
+        </div>
+        <div class="form-group col-md-2 text-center">
+            <input   id="testuygundegil5"  type="radio">
+        </div>
+        <div class="form-group col-md-2">
+          <input  name="Açma" type="text" class="form-control" id="ValfTest_acma_5">
+       
+      </div>
+      <div class="form-group col-md-2">
+          <input  name="Kapama" type="text" class="form-control"  id="ValfTest_kapama_5">
+      </div>
+        <div  name="sebep" class="form-group col-md-2 text-center">
+            <select   name="sebep" class="form-control" id="ValfTest_sebeb_5">
+              <option>Alt-Üst Nipel arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option>Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option>Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option>Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option>Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option>Manometre Alt Nipel Arası Kaçak</option>
+              <option>Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+        <div>
+          
+        </div>
+    </div>
+  </div>
+  <hr>
+  <div class="col-md-4 mx-auto">
+    <input type="submit" class="btn btn-success btn-lg btn-block" id="TestFormBtn"  onclick="TestFormSave()" value="KAYDET" disabled/><span id="valftest_warning"></span>
+   </div>
+  
+  </hr>
+  </form>
+
+ 
+
+</div>
+
+
+
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script>
+
+
+  let addableField = document.getElementById('addableField');
+	let adds = document.querySelectorAll('.addInput');
+	let i = 1;
+
+	//document.getElementById('valfTestSubmit').disabled = true;
+  var a = 0;
+  console.log('entere asdasdsadasdasdsad')
+
+   $("#seri_no_field").on('keyup', function (event) {
+      if (event.keyCode === 13) {
+         console.log("Enter key pressed!!!!!");
+         addNewLine(a)
+          
+          
+
+      }
+   });
+
+   $("#seri_no_field1").on('keyup', function (event) {
+      if (event.keyCode === 13) {
+         console.log("Enter key pressed!!!!!");
+         addNewLine(a)
+          
+          
+
+      }
+   });
+
+  function addSubmitTest(e,el){
+    console.log('tuşa basıldı ',e.keyCode)
+
+		if ( e.target.value) {
+            new Promise(function(resolve,reject){
+              let data = {
+              "tur" : 'valf_test',
+              "veri" : e.target.value
+              }
+              
+            $.ajax({
+                  type: "POST",
+                  url: '/kurlenmeKontrol',
+                  data : data,
+                  success: function (x){
+                    if(x == 'NO'){
+                      el.parentElement.lastElementChild.style.display = "block";
+                      kontrol = "";
+                      document.getElementById('TestFormBtn').disabled = true;
+                    }else{
+
+                      kontrol = "OK";
+                      el.parentElement.lastElementChild.style.display = "none";
+                      document.getElementById('TestFormBtn').disabled = false;
+                     
+                    }
+                  },
+                    error(err){
+                      console.log(err);
+                      return;
+                    }
+              });
+          }).then(function(r){
+            console.log(r)
+          }).catch(function(err){
+            console.log(err)
+          })
+	    }
+	}
+
+</script>
+
+
+
+
+
+
+<!-- 
+<script type="text/javascript">
+
+//******************** ValfTest Kaydet ********************
+  document.getElementById('valfTestKaydet').addEventListener('click',(e)=>{
+       
+
+
+
+    let valf_seri_no = document.getElementById("valf_seri_no").value;
+    let uygun = document.getElementById("uygun").checked;
+    console.log("uygun",uygun)
+ 
+    
+   
+   
+    let data = {
+      tur : 'valftest',
+      valf_seri_no : valf_seri_no,
+      uygun : uygun 
+    }
+    $.ajax({
+          type: "POST",
+          url: '/uretimkontrol',
+          data : data,
+          success: function (x){
+            Swal.fire({
+              title: 'Başarılı!',
+              text: 'Valf test başarılı bir şekilde eklendi!',
+              icon: 'success',
+              confirmButtonText: 'Tamam'
+            })
+          },
+          error(err){
+            console.log;(err);
+          }
+        }
+      );
+  })
+  
+</script> -->
+<script>
+  $(document).ready(function(){
+    $("#testuygundegil1").change(function(){
+      this.parentElement.parentElement.children[1].lastElementChild.checked = false;
+      this.parentElement.parentElement.children[1].lastElementChild.value = "";
+      //this.parentElement.parentElement.children[7].style.display = "none";
+      // this.value = "False";
+      
+    });
+    $("#testuygun1").change(function(){
+        this.parentElement.parentElement.children[2].lastElementChild.checked = false;
+      // this.parentElement.parentElement.children[2].lastElementChild.value = null;
+        this.value = "True";
+        //this.parentElement.parentElement.children[7].style.display = "block";
+    });
+
+    $("#testuygundegil2").change(function(){
+      this.parentElement.parentElement.children[1].lastElementChild.checked = false;
+      this.parentElement.parentElement.children[1].lastElementChild.value = "";
+      //this.parentElement.parentElement.children[7].style.display = "none";
+      
+    });
+    $("#testuygun2").change(function(){
+      this.parentElement.parentElement.children[2].lastElementChild.checked = false;
+      // this.parentElement.parentElement.children[2].lastElementChild.value = null;
+      this.value = "True";
+      //this.parentElement.parentElement.children[7].style.display = "block";
+    });  
+    
+    $("#testuygundegil3").change(function(){
+      this.parentElement.parentElement.children[1].lastElementChild.checked = false;
+      this.parentElement.parentElement.children[1].lastElementChild.value = "";
+      //this.parentElement.parentElement.children[7].style.display = "none";
+    });
+    $("#testuygun3").change(function(){
+      this.parentElement.parentElement.children[2].lastElementChild.checked = false;
+      // this.parentElement.parentElement.children[2].lastElementChild.value = null;
+      this.value = "True";
+    });  
+    
+    $("#testuygundegil4").change(function(){
+      this.parentElement.parentElement.children[1].lastElementChild.checked = false;
+      this.parentElement.parentElement.children[1].lastElementChild.value = "";
+      // this.value = "False";
+      //this.parentElement.parentElement.children[7].style.display = "none";
+    });
+    $("#testuygun4").change(function(){
+      this.parentElement.parentElement.children[2].lastElementChild.checked = false;
+      //this.parentElement.parentElement.children[2].lastElementChild.value = null;
+      this.value = "True";
+    });
+  
+     $("#testuygundegil5").change(function(){
+      this.parentElement.parentElement.children[1].lastElementChild.checked = false;
+      this.parentElement.parentElement.children[1].lastElementChild.value = "False";
+      //this.value = "False";
+      //this.parentElement.parentElement.children[7].style.display = "none";
+    });
+    $("#testuygun5").change(function(){
+      this.parentElement.parentElement.children[2].lastElementChild.checked = false;
+      //this.parentElement.parentElement.children[2].lastElementChild.value = null;
+      this.value = "True";
+    }); 
+    
+  });
+  
+  
+  </script>
+  <script>
+    
+    function TestFormSave(){
+      // data_list = []
+      // var form = document.getElementById('TestForm').elements;
+      
+      // for(var i = 0 ; i < form.length ; i++){ 
+      //     var item = form.item(i);
+      
+      //     if(item.name){
+      //     if(item.onkeyup){
+          
+      //     var obj = {}
+      //     obj[item.name] = item.value;
+      //     data_list.push(obj)
+      //     }
+      //     else{
+      //       obj[item.name] = item.value;
+      //     }
+      //   }
+          
+      // }
+      // console.log("save tuşuna basıldı")
+      // console.log(data_list)
+
+        var veri = [];
+        state = true;
+
+        for(var i=1; i<6; i++){
+            var seriNo = document.getElementById('valf_seri_no_'+i).value.trim();
+
+            if(seriNo === "" || seriNo.length == 0 || seriNo == undefined) {
+                
+                
+            }
+            else {
+                var uygunluk = document.getElementById('testuygun'+i).checked;
+                var ValfTest_Acma = document.getElementById('ValfTest_acma_'+i).value;
+                var ValfTest_Kapama = document.getElementById('ValfTest_kapama_'+i).value;
+
+                if(StringisNullOrEmpty(ValfTest_Acma)){ 
+                    document.getElementById('valftest_warning').innerHTML = i + ".  Açma Değerini Giriniz!";
+                    state = false;
+                    break;
+                }
+                else if(StringisNullOrEmpty(ValfTest_Kapama)){
+                    document.getElementById('valftest_warning').innerHTML = i + ".  Kapama Değerini Giriniz!";
+                    state = false;
+                    break;
+                }
+                else{
+                    var sel = document.getElementById("ValfTest_sebeb_"+i );
+                    var sebeb = sel.options[sel.selectedIndex].text;
+
+                    veri.push({
+                        seriNo: seriNo,
+                        uygunluk: uygunluk,
+                        ValfTest_Acma: ValfTest_Acma,
+                        ValfTest_Kapama: ValfTest_Kapama,
+                        sebeb: sebeb,
+                    });
+                }   
+            }   
+        }
+          
+        console.log(veri);
+  
+        veri = JSON.stringify(veri);
+        console.log("data = ", veri);
+
+        let data = {
+            tur : 'ValfTest',
+            veri : veri
+        }
+
+
+        if(state == true){
+                        
+    $.ajax({
+          type: "POST",
+          url: '/valf_test_kayıt',
+          data : data, 
+          success: function (resp){
+            if(resp['status']==200){
+            Swal.fire({
+              title: 'Başarılı!',
+              text:  resp['remark'],
+              icon: 'success',
+              confirmButtonText: 'Tamam'
+            })
+            document.getElementById("TestForm").reset()
+          }
+
+          },
+          error(err){
+            Swal.fire({
+              title: 'Sever Hatası!',
+              text:   err,
+              icon: 'warning',
+              confirmButtonText: 'Tamam'
+            })
+            document.getElementById("TestForm").reset()
+          }
+        }
+        
+      );
+
+        }
+        else{
+
+        }
+
+
+
+
+    
+  };
+  
+  function StringisNullOrEmpty(value){
+      value = value.trim();
+      return (!value || value == undefined || value === "" || value.length == 0);
+  }
+
+  </script>
+
+
+
+ 
+{% endblock %}

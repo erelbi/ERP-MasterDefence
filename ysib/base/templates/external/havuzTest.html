@@ -1,0 +1,1354 @@
+{% load static %}
+{% block manometre %}
+<style>
+  .gerisayim{
+    list-style: none;
+    display: block;
+  }
+  .gerisayim li{
+    display: inline-block;
+    padding: 10px;
+    background: lightgray;
+    font-size: 24px;
+  }
+  .glyphicon-ok{
+    float: right;
+    color: green;
+  }
+  .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+    float: right;
+  }
+  #adimlar li span {
+    float: right;
+
+  }
+  @-webkit-keyframes spin2 {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+  }
+
+  @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+  }
+  .indicator-cont{
+    width: 100%;
+    border-radius: 5px;
+    font-weight: 500;
+    border: 2px solid black;
+    background: ;
+    height: 40px;
+    line-height: 34px;
+    font-size: 18px;
+    color: #000;
+    padding: 0 6px;
+  }
+  .birim{
+    float: right;
+  }
+  .olumlu{
+   border: 4px solid  green;
+  }
+  .idyok{
+    border: 4px solid  red;
+  }
+  .bitmemis{
+    border: 4px solid  rgb(232, 248, 3);
+  }
+</style>
+<form class="form-inline">
+  <!--
+  <div class="col-md-2">
+      <button class="btn btn-primary" style="width: 80px;height: 80px;border-radius: 50%;padding:0;" id="hv_connect">BAĞLAN</button>
+  </div>
+  -->
+  <!--
+  <div class="col-md-2">
+      <button class="btn btn-primary" style="width: 80px;height: 80px;border-radius: 50%;margin-left: 20px;padding: 0;" id="hv_start">BAŞLAT</button>
+  </div>
+  -->
+
+  <!--
+  <div class="col-md-2">
+      <button class="btn btn-danger" style="width: 80px;height: 80px;border-radius: 50%;margin-left: 40px;padding: 0;" id="hv_bitir">BİTİR</button>
+  </div>
+  -->
+  <!--
+
+  -->
+
+</form>
+<div class="row mt-4">
+<form class="col-md-12" onsubmit = "event.preventDefault();" id="havuzTestForm">
+  
+  <!-- 1. Satır -->
+  <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+
+        
+        <div class="form-group col-md-1">1</div>
+
+        <div class="form-group col-md-2">
+            <input type="number" class="form-control addInput yanarsoner" onkeyup="controlHavuzid(event,this)"  id="seri_no_1"  name="vsn">
+        </div>
+         
+        <div class="form-group col-md-1 text-center">
+            <input name="havuz-uygunluk_1" id="uygunluk_1" data-degil="true" type="radio">
+        </div>
+
+
+        <div class="form-group col-md-2 text-center">
+            <input name="havuz-uygunluk_1" id="uygunlukdegil_1" data-degil="" type="radio" checked>
+        </div>
+
+
+        <div class="form-group col-md-2">
+            <input type="text" id="sicaklik_1"   class="form-control havuz_acma">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="basinc_1"  class="form-control havuz_kapatma">
+        </div>
+
+        <div class="form-group col-md-2 text-center"   >
+            <select class="form-control"  id="HavuzTest_sebep_1">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+      </div>
+  </div>
+
+
+
+  <!-- 2. Satır -->
+  <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+
+        <div class="form-group col-md-1">2</div>
+
+        <div class="form-group col-md-2">
+            <input type="number" class="form-control addInput"  onkeyup="controlHavuzid(event,this)" id="seri_no_2"  name="vsn">
+        </div>
+         
+        <div class="form-group col-md-1 text-center">
+            <input name="havuz-uygunluk_2" id="uygunluk_2" data-degil="true" type="radio">
+        </div>
+
+
+        <div class="form-group col-md-2 text-center">
+            <input name="havuz-uygunluk_2" id="uygunlukdegil_2" data-degil="" type="radio" checked>
+        </div>
+
+
+        <div class="form-group col-md-2">
+            <input type="text" id="sicaklik_2"    class="form-control havuz_acma">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="basinc_2"  class="form-control havuz_kapatma">
+        </div>
+
+        <div class="form-group col-md-2 text-center"   >
+            <select class="form-control"  id="HavuzTest_sebep_2">
+              <option >Alt-Üst Nipel arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option >Manometre Alt Nipel Arası Kaçak</option>
+              <option > Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+      </div>
+  </div>
+
+
+    <!-- 3. Satır -->
+  <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+
+        
+        <div class="form-group col-md-1">3</div>
+
+        <div class="form-group col-md-2">
+            <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_3"  name="vsn">
+        </div>
+         
+        <div class="form-group col-md-1 text-center">
+            <input name="havuz-uygunluk_3" id="uygunluk_3" data-degil="true" type="radio">
+        </div>
+
+
+        <div class="form-group col-md-2 text-center">
+            <input name="havuz-uygunluk_3" id="uygunlukdegil_3" data-degil="" type="radio" checked>
+        </div>
+
+
+        <div class="form-group col-md-2">
+            <input type="text" id="sicaklik_3"   class="form-control havuz_acma">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="basinc_3"  class="form-control havuz_kapatma">
+        </div>
+
+        <div class="form-group col-md-2 text-center"   >
+            <select class="form-control"  id="HavuzTest_sebep_3">
+              <option >Alt-Üst Nipel arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option >Manometre Alt Nipel Arası Kaçak</option>
+              <option > Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+      </div>
+  </div>
+
+
+  <!-- 4. Satır -->
+  <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+
+        <div class="form-group col-md-1">4</div>
+
+        <div class="form-group col-md-2">
+            <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_4"  name="vsn">
+        </div>
+         
+        <div class="form-group col-md-1 text-center">
+            <input name="havuz-uygunluk_4" id="uygunluk_4" data-degil="true" type="radio">
+        </div>
+
+
+        <div class="form-group col-md-2 text-center">
+            <input name="havuz-uygunluk_4" id="uygunlukdegil_4" data-degil="" type="radio" checked>
+        </div>
+
+
+        <div class="form-group col-md-2">
+            <input type="text" id="sicaklik_4"    class="form-control havuz_acma">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="basinc_4"  class="form-control havuz_kapatma">
+        </div>
+
+        <div class="form-group col-md-2 text-center"   >
+            <select class="form-control"  id="HavuzTest_sebep_4">
+              <option >Alt-Üst Nipel arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+              <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+              <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+              <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+              <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+              <option >Manometre Alt Nipel Arası Kaçak</option>
+              <option > Sibop Alt Nipel Arası Kaçak</option>
+            </select>
+        </div>
+      </div>
+  </div>
+
+
+  <!-- 5. Satır -->
+  <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">5</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)" id="seri_no_5"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_5" id="uygunluk_5" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_5" id="uygunlukdegil_5" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_5"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_5"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_5">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 6. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">6</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_6"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_6" id="uygunluk_6" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_6" id="uygunlukdegil_6" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_6"   class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_6"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_6">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 7. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">7</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)" id="seri_no_7"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_7" id="uygunluk_7" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_7" id="uygunlukdegil_7" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_7"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_7"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_7">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 8. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">8</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_8"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_8" id="uygunluk_8" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_8" id="uygunlukdegil_8" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_8"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_8"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_8">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+    <!-- 9. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">9</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_9"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_9" id="uygunluk_9" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_9" id="uygunlukdegil_9" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_9"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_9"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_9">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 10. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">10</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_10"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_10" id="uygunluk_10" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_10" id="uygunlukdegil_10" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_10"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_10"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_10">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 11. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">11</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)" id="seri_no_11"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_11" id="uygunluk_11" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_11" id="uygunlukdegil_11" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_11"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_11"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_11">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 12. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">12</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_12"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_12" id="uygunluk_12" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_12" id="uygunlukdegil_12" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_12"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_12"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_12">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 13. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">13</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_13"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_13" id="uygunluk_13" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_13" id="uygunlukdegil_13" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_13"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_13"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_13">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 14. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">14</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_14"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_14" id="uygunluk_14" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_14" id="uygunlukdegil_14" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_14"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_14"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_14">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 15. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">15</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="controlHavuzid(event,this)"  id="seri_no_15"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_15" id="uygunluk_15" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_15" id="uygunlukdegil_15" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_15"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_15"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_15">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 16. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">16</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="addSubmit(event)"  id="seri_no_16"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_16" id="uygunluk_16" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_16" id="uygunlukdegil_16" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_16"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_16"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_16">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 17. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">17</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="addSubmit(event)"  id="seri_no_17"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_17" id="uygunluk_17" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_17" id="uygunlukdegil_17" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_17"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_17"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_17">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 18. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">18</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="addSubmit(event)"  id="seri_no_18"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_18" id="uygunluk_18" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_18" id="uygunlukdegil_18" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_18"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_18"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_18">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 19. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">19</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="addSubmit(event)"  id="seri_no_19"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_19" id="uygunluk_19" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_19" id="uygunlukdegil_19" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_19"   class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_19" class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_19">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- 20. Satır -->
+    <div id="addableField">
+      <div class="form-row">
+        <div class="col-md-1 text-center"></div>
+        <div class="col-md-2 text-center">Seri no</div> 
+        <div class="col-md-1 text-center">Uygun</div>
+        <div class="col-md-2 text-center">Uygun değil</div>
+        <div class="col-md-2 text-center">Tüp Cidar Sıcaklığı</div>
+        <div class="col-md-2 text-center">Tüp Basıncı</div>
+        <div class="col-md-2 text-center">Sebep</div>
+        <div class="form-group col-md-1">20</div>
+          <div class="form-group col-md-2">
+              <input type="number" class="form-control addInput" onkeyup="addSubmit(event)"  id="seri_no_20"  name="vsn">
+          </div>
+         
+      <div class="form-group col-md-1 text-center">
+          <input name="havuz-uygunluk_20" id="uygunluk_20" data-degil="true" type="radio">
+      </div>
+
+
+      <div class="form-group col-md-2 text-center">
+          <input name="havuz-uygunluk_20" id="uygunlukdegil_20" data-degil="" type="radio" checked>
+      </div>
+
+
+          <div class="form-group col-md-2">
+              <input type="text" id="sicaklik_20"    class="form-control havuz_acma">
+          </div>
+
+          <div class="form-group col-md-2">
+              <input type="text" id="basinc_20"  class="form-control havuz_kapatma">
+          </div>
+
+          <div class="form-group col-md-2 text-center"   >
+              <select class="form-control"  id="HavuzTest_sebep_20">
+                <option >Alt-Üst Nipel arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Kapak Arası Kaçak</option>
+                <option >Emniyet Ventili Gövde-Alt Nipel Arası Kaçak</option>
+                <option >Basınç Anahtarı-Alt Nipel Arası Kaçak</option>
+                <option >Baçınç Anahtarı Açma Değeri Hatalı</option>
+                <option > Baçınç Anahtarı Kapama Değeri Hatalı</option>
+                <option >Manometre Alt Nipel Arası Kaçak</option>
+                <option > Sibop Alt Nipel Arası Kaçak</option>
+              </select>
+          </div>
+      </div>
+    </div>
+
+    
+</form>
+<!--
+<div class="col-md-2" style="padding-left: 0;">
+  
+  <div class="form-group">
+      <input type="text" class="col-md-12" id="temp" value="72" style="margin-bottom: 0px;" disabled>
+  </div>
+  
+  <div class="indicator-cont" style="margin-top:20px;"><span class="indicator" id="valfTestIndicator">00</span><span class="birim">°C</span></div>
+</div>
+-->
+</div>
+  <!--
+  <ul class="gerisayim p-0 mt-4 col-md-12">
+      <li class="minutestest">02</li>
+      <li class="secondstest">00</li>
+  </ul>
+  -->
+<hr>
+<div class="col-md-8 mx-auto">
+    <button type="button" class="btn btn-primary btn-lg" style="height: 34px" id="HavuzTest_SayaciBaslat">Sayacı Başlat</button>
+    <button type="button" class="btn btn-success btn-lg "  style="height: 34px" id="kaydetHavuzTest">KAYDET</button>
+    <span id="havuzTest_uyari"></span>
+    <!-- <button type="button" class="btn btn-primary " style="height: 34px" id="HavuzTest_SayaciBaslat">Sayacı Başlat</button> -->
+
+</div>
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/sweetalert2.min.js' %}"></script>
+
+<!-- havuz test başlangıç -->
+<script type="text/javascript">
+    // $('input[type=radio]').change(function(){
+    //           this.parentElement.parentElement.lastElementChild.children[0].disabled = !this.parentElement.parentElement.lastElementChild.children[0].disabled;
+    //         })
+</script>
+
+<script type="text/javascript">
+
+  function addSubmit(e){
+    if (e.keyCode === 13 && e.target.value){
+
+    }
+     
+
+
+  }
+
+
+</script>
+
+<script type="text/javascript">
+
+  
+  let btn_HavuzTest_SayaciBaslat = document.getElementById('HavuzTest_SayaciBaslat');
+
+  
+
+  document.getElementById('HavuzTest_SayaciBaslat').addEventListener('click', function(e){
+      e.preventDefault();
+      var el = e.target;
+      el.disabled = true;
+
+      $.ajax({
+          type: "POST",
+          url: 'http://localhost:5000/HavuzTest_start',
+          timeout: 3000,
+          success: function(x){
+              if(x == 'success'){
+                  toastr['success']("Test Başladı.");
+                  testStatus = "basladi";
+
+                  Timer_HavuzTest_TestStatus = setInterval(Timer_HavuzTest_TestStatusEventHandler, 2000);
+              }
+              else if(x == 'fail'){
+                  toastr["warning"]("Bir hata oluştu");
+                  el.disabled = false;
+              }
+          },
+          error(jqXHR, textStatus){
+              el.disabled = false;
+              toastr["warning"]("Bağlantı hatası! Uygulmananın çalışır durumda olduğundan emin olunuz!");
+              console.log(jqXHR);
+          }
+      });
+  });
+  
+
+  var testStatus = "None";
+
+  function Timer_HavuzTest_TestStatusEventHandler(){
+      $.ajax({
+          type: "POST",
+          url: 'http://localhost:5000/HavuzTest_TestStatus',
+          timeout: 3000,
+          success: function(x){
+              if(x == 'bitti' && testStatus == 'basladi'){
+                  toastr["success"]("Test işlemi bitti.");
+                  testStatus = "bitti";
+                  
+              }
+              else if(x == 'None'){
+                  testStatus == "None";
+                  clearInterval(Timer_HavuzTest_TestStatus);
+                  btn_HavuzTest_SayaciBaslat.disabled = false;
+              }
+          }
+      });
+  };
+  
+
+
+</script>
+
+
+
+
+
+<script type="text/javascript">
+
+kaydet_btn=document.getElementById('kaydetHavuzTest')
+    kaydet_btn.disabled = true;
+
+    document.getElementById('kaydetHavuzTest').addEventListener('click',(e)=>{
+        var veri = [];
+        state = true;
+
+        document.getElementById('havuzTest_uyari').innerHTML = ""
+
+        for(var i=1; i<21; i++){
+            var seriNo = document.getElementById('seri_no_'+i).value.trim();
+
+            if(seriNo === "" || seriNo.length == 0 || seriNo == undefined) {
+                
+                
+            }
+            else {
+                var uygunluk = document.getElementById('uygunluk_'+i).checked;
+                var sicaklik = document.getElementById('sicaklik_'+i).value;
+                var basinc = document.getElementById('basinc_'+i).value;
+
+                if(StringisNullOrEmpty(sicaklik)){ 
+                    document.getElementById('havuzTest_uyari').innerHTML = i + ".  satırdaki Tüp Cidar Sıcaklığı'nı doldurunuz!";
+                    state = false;
+                    break;
+                }
+                else if(StringisNullOrEmpty(basinc)){
+                    document.getElementById('havuzTest_uyari').innerHTML = i + ".  satırdaki Tüp Basıncı'nı doldurunuz!";
+                    state = false;
+                    break;
+                }
+                else{
+                    var sel = document.getElementById("HavuzTest_sebep_"+i );
+                    var sebeb = sel.options[sel.selectedIndex].text;
+
+                    veri.push({
+                        seriNo: seriNo,
+                        uygunluk: uygunluk,
+                        sicaklik: sicaklik,
+                        basinc: basinc,
+                        sebeb: sebeb,
+                    });
+                }   
+            }   
+        }
+        
+        console.log(veri);
+
+        veri = JSON.stringify(veri);
+        console.log("data = ", veri)
+
+
+        let data = {
+            tur : 'havuztest',
+            veri : veri
+        }
+
+        if(state == true){
+            $.ajax({
+                type: "POST",
+                url: '/havuztestsave',
+                data : data,
+                success: function (resp){
+                
+                  if(resp['code']==200){
+                    Swal.fire({
+                    title: 'Başarılı!',
+                    text: 'Havuz test ' +"valf seri no: "+resp['vsn'] + 'başarılı bir şekilde eklendi!',
+                    icon: 'success',
+                    confirmButtonText: 'Tamam'
+                    })}
+                  else if (resp['code']==400){
+                      Swal.fire({
+                    title: 'Başarısız!',
+                    text: resp['remark'],
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                    })}
+                    
+                
+                },
+                error(err){
+                    console.log;(err);
+                }
+                }
+            );
+
+        }else{
+            
+        }
+    });
+
+
+    function StringisNullOrEmpty(value){
+        value = value.trim();
+        return (!value || value == undefined || value === "" || value.length == 0);
+    }
+
+
+
+  function controlHavuzid(e,el){
+    console.log('tuşa basıldı ',e.keyCode)
+    console.log(StringisNullOrEmpty(e.target.value))
+    if(StringisNullOrEmpty(e.target.value)){
+      kaydet_btn.disabled = false;
+    }
+
+		if ( e.target.value) {
+            new Promise(function(resolve,reject){
+              let data = {
+              "veri" : e.target.value
+              }
+              
+            $.ajax({
+                  type: "POST",
+                  url: '/havuztestcontrol',
+                  data : data,
+                  success: function (resp){
+                    if(resp['code'] == 200){
+                        el.className = " form-control addInput "
+                        el.className += " olumlu "
+                        toastr['success'](resp['remark']);
+                        kaydet_btn.disabled = false;
+                        
+                    }else if(resp['code'] == 201)
+                    {
+                      el.className = " form-control addInput "
+                      el.className += " bitmemis "
+                      toastr["info"](resp['remark']);
+                      kaydet_btn.disabled = true;
+                      
+                    }else if(resp['code'] == 400)
+                     {
+                      el.className = " form-control addInput "
+                      el.className += " idyok "
+                      toastr["warning"](resp['remark']);
+                     
+                    }else if(resp['code'] == 500){
+                      el.className = " form-control addInput "
+                      el.className += " idyok "
+                      toastr["warning"](resp['remark']);
+                    }
+
+                  },
+                    error(err){
+                      console.log(err);
+                      return;
+                    }
+              });
+          }).then(function(r){
+
+          }).catch(function(err){
+            console.log(err)
+          })
+	    }
+  }
+  
+</script>
+
+{% endblock %}

@@ -1,0 +1,358 @@
+{% load static %}
+{% load govdekurlenme  %}
+{% block manometre %}
+<hr>
+
+
+<div class="row">
+  <form class="col-md-6" id="kurlenmeForm">
+
+    <div class="form-group col-md-3">
+      <label for="durum">İş Emri Şeçin</label>
+        <select id="fm200kurlenmefind"  onchange="fm200kurlenme_change_func()"  required >
+          <option value="" disabled selected>Seçin</option>
+          {% for id in fm200_emir %}
+          {% find_user_name  id  as  name %}
+          {% if name != None %}
+          <option value="{{id}}"> {{name}}</option>
+           {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+
+      <p id="demo">No log</p>
+
+      <div class="card mt-4">
+        
+        <div class="card-header" style="color: #c7ae3c;background-color: #d7e9fa; font-size: 20px;">
+          İş emri valf tablosu
+        </div>
+
+        <div class="card-body">
+          <table class="table table-hover" id="valflerFM200TableId" data-sort-name="oncelik">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Valf No</th>
+                <th scope="col">Parti No</th>
+              </tr>
+            </thead>
+            <tbody id="oncelikForm">
+              <!--
+                bu tablonun satırları aşağıdaki ajax call ile dolar.table id  ile bulunur bu tablo.
+              -->
+              
+            </tbody>
+          </table>
+        </div>
+        </div>
+        <div>
+          <button type="button" id="btn-bm-bitir" class="btn btn-success" style="height: 34px;margin-top: 20px;width: 100px;" onclick="baslatfm200kurlenme()">BAŞLAT</button>
+        
+        </div>
+</form>
+
+
+
+<div class="card mt-8">
+        
+  <div class="card-header" style="color: #c7ae3c;background-color: #d7e9fa; font-size: 20px;">
+    Valf Kürlenme Tablosu
+  </div>
+  <div class="card-body ">
+    <table class="table table-hover" id="FM200KurlemeTableId" data-sort-name="bitisoncelik">
+      <thead>
+        <tr>
+          <th scope="col">Parti No</th>
+          <th scope="col">Valf No</th>
+          <th scope="col">Kalan Süre</th>
+        </tr>
+      </thead>
+      <tbody id="oncelikForm">
+        <!--
+          bu tablonun satırları aşağıdaki ajax call ile dolar.table id  ile bulunur bu tablo.
+        -->
+        
+      </tbody>
+    </table>
+<!-- 
+  <div class="card-body">
+    <table class="table table-hover" id="valflerGovdeTableId" data-sort-name="oncelik">
+      <thead>
+        <tr>
+          <th scope="col">Parti No</th>
+          <th scope="col">Valf Seri Numaraları</th>
+          <th scope="col">Kalan Süre</th>
+        </tr>
+      </thead>
+      <tbody id="oncelikForm">
+        {% for kurlenme in kurlenmes %}
+        <tr >{{kurlenme.valf.parti_no}}        </tr>
+        <tr >{{kurlenme.valf.id}}        </tr>
+        <tr ><span class="badge badge-primary badge-pill">{{kurlenme.kurlenme_bitis|timeuntil:now}}</span></tr>
+ 
+        {% endfor %}
+        
+      </tbody>
+    </table> -->
+  </div>
+  </div>  
+
+ 
+ 
+</div>
+<hr>
+ 
+<script id="cookie">
+  //https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+  function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {
+    document.cookie = name+'=; Max-Age=-99999999;';
+}
+</script>
+
+
+ 
+
+
+<script>
+
+  function fm200kurlenme_change_func() {
+    
+
+
+    let value_gk = document.getElementById("fm200kurlenmefind").value;
+    console.log(value_gk)
+    let valfler="-";
+    var is_emir_valfleri_geldi_mi = new Promise(function(resolve,reject){
+     
+     let data = {
+             "is_emri_id" : value_gk
+           }
+      $.ajax(
+          {
+            type: "POST",
+            url: '/kurlenmefm200',
+            data : data,
+            success: function (x){
+            console.log(x)
+
+            valfler = x;
+            resolve(valfler);
+            // console.log("vlferl",valfler)
+            
+            },
+            error(err){
+            console.log;(err);
+            }
+            }
+        );
+        // console.log("vvvvv2",valfler)
+
+  
+
+  })
+  // console.log("vvvvv3",valfler)
+
+
+   is_emir_valfleri_geldi_mi.then(function(res){
+
+
+    console.log(res)
+
+    //önceki iş emrinin valf rowlarını temizle
+    $("#valflerFM200TableId tbody tr").remove();
+    
+    console.log("vvvvv4",valfler)
+    //yeni seçilen  iş emrinin valf rowlarını olutşur
+
+    for (var i = 0; i < valfler.length; i++){
+        //We first declare the variables for each <td> we need          
+        var valf = valfler[i]
+        valf_id=valf['id']
+        parti_no=valf['parti']
+        check_box=' <input type="checkbox" checked disabled id="'+ valf_id +'"">'
+
+        if (parti_no == null) { 
+          parti_no = "-";
+          check_box=' <input type="checkbox" id="'+ valf_id +'"">'
+
+        }
+        
+
+        //We then append them to a string in html fashion
+
+        added_row =  
+        '<tr>'
+          + '<td>' + check_box+  '</td>'
+          + '<td>' + valf_id+  '</td>'
+        + '<td>' + parti_no+  '</td>'
+         + '</tr>'
+        //To finally append this long string to your table through it's ID:
+        $('#valflerFM200TableId').append(added_row)
+        };
+ 
+    })
+    function badEmptyCheck(value) {
+  return Object.keys(value).length === 0;
+}
+   
+   is_emir_valfleri_geldi_mi.then(function(res){
+    let parti = []
+    console.log("res",res)
+    if ( badEmptyCheck(res) == false ){
+   
+    for (var i = 0; i < res.length; i++ ){
+         console.log("-----------",res[i].parti)
+         if (parti.includes(res[i].parti) == false &&  res[i].parti != null) { 
+          parti.push(res[i].parti)
+         }
+         else{
+           console.log("hata")
+           
+         }
+        }
+      }
+     console.log("value",value_gk)
+      console.log("tarihleri_getir",parti)
+      $.ajax(
+          {
+            type: "POST",
+            url: '/fm200tarih',
+            data : {'parti_no':parti,'is_emri':value_gk},
+            success: function (valfler){
+                  
+              $("#FM200KurlemeTableId tbody tr").remove();
+            
+        
+            console.log(valfler)
+
+            for (var i = 0; i < valfler.length; i++){        
+                parti_no=valfler[i]['partino']
+                valf_no=valfler[i]['valfno']
+                tarih=valfler[i]['tarih']
+                console.log(Date.parse(tarih))
+                
+
+                //We then append them to a string in html fashion
+
+                added_row =  
+                '<tr>'
+                  + '<td>' + parti_no+  '</td>'
+                  + '<td>' + valf_no+  '</td>'
+                + '<td>' + tarih+  '</td>'
+                 + '</tr>'
+                //To finally append this long string to your table through it's ID:
+                $('#FM200KurlemeTableId').append(added_row)
+                };
+
+            
+            
+            
+            },
+            error(err){
+            console.log;(err);
+            }
+            }
+        );
+
+     
+    })
+
+}
+</script>
+ 
+
+<script>
+
+  function baslatfm200kurlenme()
+  {
+  
+    valflere_fm200_kurlenme_parti_no_ata()
+
+  
+
+
+
+  }
+
+
+  function valflere_fm200_kurlenme_parti_no_ata()
+  {
+  
+   var valfler=  $("#valflerFM200TableId tbody tr input:checked") 
+   console.log("valfler",valfler)
+   let veri = Array(valfler.length);
+
+   for(i=0;i<valfler.length;i++)
+   {
+
+    veri[i]=valfler[i].id
+   }
+   console.log(veri)
+
+   console.log("veri",veri)
+   veri = JSON.stringify(veri);
+
+
+        
+  
+   var acikemirlerselectedValueFM200 = document.getElementById("fm200kurlenmefind").value;
+
+   let data = {
+             "valfler_id" : veri ,
+             "is_emri" : acikemirlerselectedValueFM200
+
+           }
+           console.log(data)
+      $.ajax(
+          {
+            type: "POST",
+            url: '/valf_fm200_parti_no_ata',
+            data : data,
+            success: function (x){
+              fm200kurlenme_change_func()
+
+            Swal.fire({
+              title: 'Başarılı!',
+              text: 'Parti oluşturuldu ve kürlenme başlatıldı!',
+              icon: 'success',
+              confirmButtonText: 'Tamam'
+            }).then(function(){ 
+          location.reload();
+          })
+          },
+                  error(err){
+                    console.log(err);
+                  }
+            }
+        );
+        console.log("vvvvv2",valfler)
+  }
+  
+  
+  
+  </script>
+
+
+
+ 
+{% endblock %}
