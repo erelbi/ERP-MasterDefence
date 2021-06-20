@@ -186,8 +186,8 @@ function eraseCookie(name) {
          }
          
          else{
-           console.log(res[i].parti_no)
-           
+          //  console.log(res[i].parti_no)
+           //alert("Bir Hata ile karşılaşıldı")
          }
          
         }
@@ -201,7 +201,7 @@ function eraseCookie(name) {
               confirmButtonText: 'Tamam'
             })
       }
-      console.log(parti_no)
+      // console.log(parti_no)
     $.ajax(
           {
             type: "POST",
@@ -342,11 +342,11 @@ function eraseCookie(name) {
             })
           },
                   error(err){
-                    console.log(err);
+                    alert(err)
                   }
             }
         );
-        console.log("vvvvv2",valfler)
+        // console.log("vvvvv2",valfler)
   }
   
   

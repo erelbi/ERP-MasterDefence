@@ -152,9 +152,12 @@
         {% include 'external/finalMontaj.html' %}
       </div>
       {% endif %}
+      {% if request.user.birim == "Kalite kontrol" and  request.user.grup == "Yönetici" %}
       <div>
         {% include 'external/pdf_rapor.html' %}
       </div>
+      {% endif %}
+
 
     </div><!-- //tab-content -->
 
@@ -188,40 +191,40 @@ document.querySelectorAll(".textinput").forEach(input => {
 });
 
 
-var els = document.querySelectorAll(".textinput");
-for (let i = 0; i < els.length; i++) {
-  const element = els[i];
-  element.addEventListener("focus", event => {
-    //keyboard.keyboardDOM.style.top = window.scrollY + screen.availHeight - 330 + "px";
-    keyboard.keyboardDOM.classList.add("show-keyboard");
+// var els = document.querySelectorAll(".textinput");
+// for (let i = 0; i < els.length; i++) {
+//   const element = els[i];
+//   element.addEventListener("focus", event => {
+//     //keyboard.keyboardDOM.style.top = window.scrollY + screen.availHeight - 330 + "px";
+//     keyboard.keyboardDOM.classList.add("show-keyboard");
     
-  });
-}
+//   });
+// }
 
-document.addEventListener("click", event => {
-  if (
-    // Target is not keyboard element
-    event.target !== keyboard.keyboardDOM &&
-    // Target is not the input
-    !event.target.classList.contains('textinput') &&
-    // Target is not a keyboard button
-    !event.target.classList.contains("hg-button")
-  ) {
-    hideKeyboard();
-  }
-});
+// document.addEventListener("click", event => {
+//   if (
+//     // Target is not keyboard element
+//     //event.target !== keyboard.keyboardDOM &&
+//     // Target is not the input
+//     !event.target.classList.contains('textinput') &&
+//     // Target is not a keyboard button
+//     !event.target.classList.contains("hg-button")
+//   ) {
+//     hideKeyboard();
+//   }
+// });
 
-function onInputFocus(event) {
-  selectedInput = `#${event.target.id}`;
+// function onInputFocus(event) {
+//   selectedInput = `#${event.target.id}`;
 
-  keyboard.setOptions({
-    inputName: event.target.id
-  });
-}
+//   keyboard.setOptions({
+//     inputName: event.target.id
+//   });
+// }
 
-function onInputChange(event) {
-  keyboard.setInput(event.target.value, event.target.id);
-}
+// function onInputChange(event) {
+//   keyboard.setInput(event.target.value, event.target.id);
+// }
 
 function onChange(input) {
   console.log("Input changed", input);

@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load username %}
+{% load is_emri_no %}
+{% load vsn %}
 {% block style %}
 <link href="{% static 'css/bootstrap-tables.css' %}" rel="stylesheet">
 <link href="{% static 'css/selectize.min.css' %}" rel="stylesheet">
@@ -289,14 +292,14 @@
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{{ uretim.is_emri }}</td>
-            <td>{{ uretim.vsn }}</td>
+            <td>{%  isemri uretim.id %}</td>
+            <td>{% valf_no uretim.id %}</td>
             <td>{{ uretim.acma }}</td>
-            <td>{{ uretim.kapatma }}</td>
-            <td>{{ uretim.uygunluk }}</td>
+            <td>{{ uretim.kapama }}</td>
+            <td>{{ uretim.uygun }}</td>
             <td>{{ uretim.sebep }}</td>
-            <td>{{ uretim.personel }}</td>
-            <td>{{ uretim.date }}</td>
+            <td>{% user_name uretim.test_personel_id %}</td>
+            <td>{{ uretim.test_tarihi }}</td>
           </tr>
     {% endfor %}
   </tbody>

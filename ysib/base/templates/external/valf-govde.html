@@ -130,7 +130,10 @@
             console.log;(err);
           }
         }
-      );
+      ).then(function(){
+        $('#valfGovdeForm')[0].reset();
+
+      });
   })
 </script>
 <script>

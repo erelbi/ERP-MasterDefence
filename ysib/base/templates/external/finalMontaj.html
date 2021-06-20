@@ -42,7 +42,7 @@
 <hr>
 <div class="row">
     <div class="col-md-7">
-        <form class="col-md-12">
+        <form id="FinalMontajForm" class="col-md-12">
           <div class="form-inline">
               <div class="form-group mb-2 col-lg-4 col-md-12">
                 <span>Valf Seri Numarası :</span>
@@ -105,6 +105,7 @@
 
 
 <script>
+  var agr = 0
   let final_kydt = document.getElementById('kaydetFinalMontaj');
   final_kydt.disabled =  true;
   let btn_FinalMontaj_Baglan = document.getElementById('FinalMontaj_Baglan');
@@ -173,6 +174,7 @@
             }
             else{
                 txt_FinalMontaj_weight.innerText = x['Weight'];
+                agr =  x['Weight'];
                 txt_FinalMontaj_WeightUnit.innerHTML = x['weightUnit'];
             }
 
@@ -220,7 +222,7 @@
     
 
     let data = {
-      vsn:vsn ,etiket:etiket, fsn:fsn,fso:fso,bao:bao
+      vsn:vsn ,etiket:etiket, fsn:fsn,fso:fso,bao:bao,agr:agr
     }
     $.ajax({
           type: "POST",
@@ -259,7 +261,10 @@
             console.log;(err);
           }
         }
-      );
+      ).then(function(){
+        $('#FinalMontajForm')[0].reset();
+        final_kydt.disabled = true;
+      });
   });
   function StringisNullOrEmpty(value){
       value = value.trim();

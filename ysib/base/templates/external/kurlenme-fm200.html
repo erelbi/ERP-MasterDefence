@@ -176,12 +176,12 @@ function eraseCookie(name) {
    is_emir_valfleri_geldi_mi.then(function(res){
 
 
-    console.log(res)
+    // console.log(res)
 
     //önceki iş emrinin valf rowlarını temizle
     $("#valflerFM200TableId tbody tr").remove();
     
-    console.log("vvvvv4",valfler)
+    // console.log("vvvvv4",valfler)
     //yeni seçilen  iş emrinin valf rowlarını olutşur
 
     for (var i = 0; i < valfler.length; i++){
@@ -214,30 +214,34 @@ function eraseCookie(name) {
     function badEmptyCheck(value) {
   return Object.keys(value).length === 0;
 }
-   
+let valfler_data = []
    is_emir_valfleri_geldi_mi.then(function(res){
-    let parti = []
-    console.log("res",res)
+  
+    // console.log("res",res)
     if ( badEmptyCheck(res) == false ){
-   
     for (var i = 0; i < res.length; i++ ){
-         console.log("-----------",res[i].parti)
-         if (parti.includes(res[i].parti) == false &&  res[i].parti != null) { 
-          parti.push(res[i].parti)
+      //  console.log(res)
+         if (res[i].parti != undefined &&  res[i].parti != null) { 
+           valfler_data.push({
+             id:res[i].id,
+             parti:res[i].parti
+           })
          }
          else{
-           console.log("hata")
-           
+           alert("Valf ve Parti No'lar çekilirken Hata oluştu!")
          }
         }
       }
-     console.log("value",value_gk)
-      console.log("tarihleri_getir",parti)
+      let veri=JSON.stringify(valfler_data)
+      let data = {
+        veri:veri
+      }
       $.ajax(
           {
             type: "POST",
             url: '/fm200tarih',
-            data : {'parti_no':parti,'is_emri':value_gk},
+            // data : {'parti_no':parti,'is_emri':value_gk},
+            data:data,
             success: function (valfler){
                   
               $("#FM200KurlemeTableId tbody tr").remove();
@@ -337,7 +341,7 @@ function eraseCookie(name) {
               icon: 'success',
               confirmButtonText: 'Tamam'
             }).then(function(){ 
-          location.reload();
+          //location.reload();
           })
           },
                   error(err){

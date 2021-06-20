@@ -286,17 +286,17 @@ def valf_govde_save(request):
         valf_main = Valf.objects.get(id=valf_govde_veri_list[0])
         if  duplicate_control_govde(valf_govde_veri_list[0]) is  None:
             if valf_govde_veri_list[4] == True:
-                govde = Valf_govde(tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],govde_personel_id=request.user.id,uygunluk=True,govde_tarihi=timezone.now())
+                govde = Valf_govde(vsn=valf_govde_veri_list[0],tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],govde_personel_id=request.user.id,uygunluk=True,govde_tarihi=timezone.now())
                 print("govde-----True")
             else:
                 print("uygundegil")
-                govde = Valf_govde(tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],uygunluk=False,sebep=valf_govde_veri_list[5],govde_personel_id=request.user.id,govde_tarihi=timezone.now())
+                govde = Valf_govde(vsn=valf_govde_veri_list[0],tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],uygunluk=False,sebep=valf_govde_veri_list[5],govde_personel_id=request.user.id,govde_tarihi=timezone.now())
             govde.save()
             valf_main.valf_govde_id = govde.id
             valf_main.save()
         else:
             print("duplike var")
-            Valf_govde.objects.filter(id=valf_main.valf_govde_id).update(tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],uygunluk=valf_govde_veri_list[4],sebep=valf_govde_veri_list[5],govde_personel_id=request.user.id,govde_tarihi=timezone.now())
+            Valf_govde.objects.filter(id=valf_main.valf_govde_id).update(vsn=valf_govde_veri_list[0],tork=valf_govde_veri_list[3],tup_seri_no=valf_govde_veri_list[1] ,sodyum_miktari=valf_govde_veri_list[2],uygunluk=valf_govde_veri_list[4],sebep=valf_govde_veri_list[5],govde_personel_id=request.user.id,govde_tarihi=timezone.now())
            
             return JsonResponse({'status':201,'remark':"Güncelleme İşlemi Başarılı!"})
             
@@ -355,10 +355,10 @@ def kurlenme_govde(request):
 
 def uygunluk_kontrol(govde):
     try:
-       print(type(Valf_govde.objects.filter(id=govde).values_list('uygunluk',flat=True).first()))
+       #print(type(Valf_govde.objects.filter(id=govde).values_list('uygunluk',flat=True).first()))
        return  Valf_govde.objects.filter(id=govde).values_list('uygunluk',flat=True).first()
     except Exception as err:
-        print(err)
+        #print(err)
         return False
 
 
@@ -393,9 +393,9 @@ def valf_govde_parti_no_ata(request):
 
 
     valfler_id=request.POST.dict()['valfler_id'] 
-    print("valfler_id",valfler_id)
+    #print("valfler_id",valfler_id)
     valfler_id_array = json.loads(valfler_id)
-    print(valfler_id_array)
+    #print(valfler_id_array)
     for id in valfler_id_array:
         valf  =  Valf_govde.objects.get(id=Valf.objects.filter(id=id).values_list('valf_govde_id',flat=True).first())
         if valf.govde_kurlenme_parti_no is None:
@@ -413,47 +413,61 @@ def valf_govde_parti_no_ata(request):
 ################Govde kurlenme tarih getir##########
 @csrf_exempt
 def govdemontajKurlenme(request):
-    govde_list=[]
-    for list_govde in Valf.objects.filter(is_emri_id=request.POST.dict()['is_emri']).values_list('valf_govde_id',flat=True):
-         if list_govde != None:
-             govde_list.append(list_govde)
-    print("--------------Zaman------------------")
-    print(govde_list)
-    print(request.POST.getlist('parti_no[]'))
-    print("---------------Zaman-----------------")
-    montaj_list=[]
     try:
-        if  len(request.POST.getlist('parti_no[]')[0]) > 0:
-            for parti_no,is_emri in zip(request.POST.getlist('parti_no[]'),govde_list):
-                print(parti_no,is_emri)
-                clock = Valf_govde.objects.filter(id=is_emri).filter(govde_kurlenme_parti_no=parti_no).first().govde_kurlenme_bitis_tarihi - timezone.now()
-                print("zaman",timezone.now())
-                print(clock)
-                print(Valf_govde.objects.filter(govde_kurlenme_parti_no=parti_no).first().govde_kurlenme_bitis_tarihi )
+        montaj_list=[]
+        for valf_tablosu in json.loads(request.POST.dict()['veri']):
+            print(valf_tablosu)
+            if Valf_govde.objects.filter(vsn=int(valf_tablosu['id'])).filter(govde_kurlenme_parti_no=valf_tablosu['parti']):
+                clock = Valf_govde.objects.filter(vsn=int(valf_tablosu['id'])).first().govde_kurlenme_bitis_tarihi - timezone.now()
                 montaj={}
                 montaj['tarih'] = time_calc(clock)
-                montaj['partino'] = parti_no
-                valf_no_list=[]
-                for valf_no in  Valf_govde.objects.filter(govde_kurlenme_parti_no=parti_no).values_list('id',flat=True):  
-                    valf_no_list.append(valf_no)
-                montaj['valfno'] = Valf.objects.filter(valf_govde_id=valf_no).values_list('id',flat=True).first()
-                print("------------------>",valf_no_list)
+                montaj['partino'] = valf_tablosu['parti']
+                montaj['valfno'] = valf_tablosu['id']
                 montaj_list.append(montaj)
-            return JsonResponse(list(montaj_list),safe=False)
-        else:
-            return JsonResponse(list(montaj_list),safe=False)
+        return JsonResponse(list(montaj_list),safe=False)
     except Exception as err:
         print(err)
-        return JsonResponse(list(montaj_list),safe=False)
+    # govde_list=[]
+    # for list_govde in Valf.objects.filter(is_emri_id=request.POST.dict()['is_emri']).values_list('valf_govde_id',flat=True):
+    #      if list_govde != None:
+    #          govde_list.append(list_govde)
+    # # print("--------------Zaman------------------")
+    # #print(govde_list)
+    # # print(request.POST.getlist('parti_no[]'))
+    # # print("---------------Zaman-----------------")
+    # montaj_list=[]
+    # try:
+    #     if  len(request.POST.getlist('parti_no[]')[0]) > 0:
+    #         for parti_no,is_emri in zip(request.POST.getlist('parti_no[]'),govde_list):
+    #             print(parti_no,is_emri)
+    #             clock = Valf_govde.objects.filter(id=is_emri).filter(govde_kurlenme_parti_no=parti_no).first().govde_kurlenme_bitis_tarihi - timezone.now()
+    #             #print("zaman",timezone.now())
+    #             #print(clock)
+    #             #print(Valf_govde.objects.filter(govde_kurlenme_parti_no=parti_no).first().govde_kurlenme_bitis_tarihi )
+    #             montaj={}
+    #             montaj['tarih'] = time_calc(clock)
+    #             montaj['partino'] = parti_no
+    #             valf_no_list=[]
+    #             for valf_no in  Valf_govde.objects.filter(govde_kurlenme_parti_no=parti_no).values_list('id',flat=True):  
+    #                 valf_no_list.append(valf_no)
+    #             montaj['valfno'] = Valf.objects.filter(valf_govde_id=valf_no).values_list('id',flat=True).first()
+    #             #print("------------------>",valf_no_list)
+    #             montaj_list.append(montaj)
+    #         return JsonResponse(list(montaj_list),safe=False)
+    #     else:
+    #         return JsonResponse(list(montaj_list),safe=False)
+    # except Exception as err:
+    #     #print(err)
+    #     return JsonResponse(list(montaj_list),safe=False)
 
 
-# def time_calc(data):
-#     print("data.days",data.days)
-#     if data.days == 0:
+def time_calc(data):
+    print("data.days",data.days)
+    if data.days == 0:
         
-#        return  "{}:{}".format(data.seconds//3600,(data.seconds//60)%60,data.seconds%60)
-#     else:
-#         return "Kürleme Bitmiştir"
+       return  "{}:{}".format(data.seconds//3600,(data.seconds//60)%60,data.seconds%60)
+    else:
+        return "Kürlenme Bitmiştir"
     
 
 ##############FM200Kontrol###############################
@@ -494,19 +508,20 @@ def fm200_save(request):
         valf_main = Valf.objects.get(id=fm200_veri_list[0])
         print(valf_main)
         if  duplicate_control_fm200(fm200_veri_list[0]) is  None:
-            fm200 = Valf_fm200(bar=fm200_veri_list[1],fm200=fm200_veri_list[2],fm200_personel_id=request.user.id,bos_agirlik=fm200_veri_list[3],dolu_agirlik=fm200_veri_list[4],kayit_tarihi=timezone.now())
+            fm200 = Valf_fm200(vsn=fm200_veri_list[0],bar=fm200_veri_list[1],fm200=fm200_veri_list[2],fm200_personel_id=request.user.id,bos_agirlik=fm200_veri_list[3],dolu_agirlik=fm200_veri_list[4],kayit_tarihi=timezone.now())
             fm200.save()
             valf_main.fm200_azot_id = fm200.id
             valf_main.save()
         else:
             print("duplike var")
-            Valf_fm200.objects.filter(id=valf_main.fm200_azot_id).update(bar=fm200_veri_list[1],fm200=fm200_veri_list[2],fm200_personel_id=request.user.id,bos_agirlik=fm200_veri_list[3],dolu_agirlik=fm200_veri_list[4],kayit_tarihi=timezone.now())
+            Valf_fm200.objects.filter(id=valf_main.fm200_azot_id).update(vsn=fm200_veri_list[0],bar=fm200_veri_list[1],fm200=fm200_veri_list[2],fm200_personel_id=request.user.id,bos_agirlik=fm200_veri_list[3],dolu_agirlik=fm200_veri_list[4],kayit_tarihi=timezone.now())
             return JsonResponse({'status':201,'remark':"Güncelleme İşlemi Başarılı!"})
             
       
         return JsonResponse({'status':200,'remark':"Save"})
     except Exception as err:
         print("fm200_hata----->",err)
+        return JsonResponse({'status':400,'remark':"{}".format(err)})
     
 
 
@@ -571,30 +586,46 @@ def valf_fm200_parti_no_ata(request):
 ##########fm2000 kurlenme getir########3
 @csrf_exempt
 def fm200Kurlenme(request):
-    print(request.POST.getlist('parti_no[]'))
-    fm200_list=[]
-    for fm200 in Valf.objects.filter(is_emri_id=request.POST.dict()['is_emri']).values_list('fm200_azot_id',flat=True):
-         if fm200 != None:
-             fm200_list.append(fm200)
-    montaj_list=[]
     try:
-        if  len(request.POST.getlist('parti_no[]')[0]) > 0:
-            for parti_no,is_emri in zip(request.POST.getlist('parti_no[]'),fm200_list):
-                clock = Valf_fm200.objects.filter(id=is_emri).filter(fm200_parti_no=parti_no).first().fm200_kurlenme_bitis_tarihi - timezone.now()
+        montaj_list=[]
+        for valf_tablosu in json.loads(request.POST.dict()['veri']):
+            #print(valf_tablosu)
+            if Valf_fm200.objects.filter(vsn=int(valf_tablosu['id'])).filter(fm200_parti_no=valf_tablosu['parti']):
+                clock = Valf_fm200.objects.filter(vsn=int(valf_tablosu['id'])).first().fm200_kurlenme_bitis_tarihi - timezone.now()
                 montaj={}
                 montaj['tarih'] = time_calc(clock)
-                montaj['partino'] = parti_no
-                valf_no_list=[]
-                for valf_no in  Valf_fm200.objects.filter(fm200_parti_no=parti_no).values_list('id',flat=True):  
-                    valf_no_list.append(valf_no)
-                montaj['valfno'] = Valf.objects.filter(fm200_azot_id=valf_no).values_list('id',flat=True).first()
+                montaj['partino'] = valf_tablosu['parti']
+                montaj['valfno'] = valf_tablosu['id']
                 montaj_list.append(montaj)
-            return JsonResponse(list(montaj_list),safe=False)
-        else:
-            return JsonResponse(list(montaj_list),safe=False)
+        return JsonResponse(list(montaj_list),safe=False)
     except Exception as err:
         print(err)
-        return JsonResponse(list(montaj_list),safe=False)
+        return  JsonResponse(list(montaj_list),safe=False)
+        
+    # print(request.POST.getlist('parti_no[]'))
+    # fm200_list=[]
+    # for fm200 in Valf.objects.filter(is_emri_id=request.POST.dict()['is_emri']).values_list('fm200_azot_id',flat=True):
+    #      if fm200 != None:
+    #          fm200_list.append(fm200)
+    # montaj_list=[]
+    # try:
+    #     if  len(request.POST.getlist('parti_no[]')[0]) > 0:
+    #         for parti_no,is_emri in zip(request.POST.getlist('parti_no[]'),fm200_list):
+    #             clock = Valf_fm200.objects.filter(id=is_emri).filter(fm200_parti_no=parti_no).first().fm200_kurlenme_bitis_tarihi - timezone.now()
+    #             montaj={}
+    #             montaj['tarih'] = time_calc(clock)
+    #             montaj['partino'] = parti_no
+    #             valf_no_list=[]
+    #             for valf_no in  Valf_fm200.objects.filter(fm200_parti_no=parti_no).values_list('id',flat=True):  
+    #                 valf_no_list.append(valf_no)
+    #             montaj['valfno'] = Valf.objects.filter(fm200_azot_id=valf_no).values_list('id',flat=True).first()
+    #             montaj_list.append(montaj)
+    #         return JsonResponse(list(montaj_list),safe=False)
+    #     else:
+    #         return JsonResponse(list(montaj_list),safe=False)
+    # except Exception as err:
+    #     print(err)
+    #     return JsonResponse(list(montaj_list),safe=False)
 
 @csrf_exempt
 def fm200deger(request):
@@ -690,13 +721,13 @@ def finalmontajsave(request):
             vsn = request.POST.dict()['vsn']
             valf_main = Valf.objects.get(id=int(vsn))
             if duplicate_control_finalmontaj(int(vsn)) is None:
-                final_montaj=Valf_final_montaj(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(), funye_seri_no=request.POST.dict()['fsn'])
+                final_montaj=Valf_final_montaj(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(), funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'])
                 final_montaj.save()
                 valf_main.valf_final_montaj_id = final_montaj.id
                 valf_main.save()
                 return JsonResponse({'code':200,'remark':"Kayıt Başarılı"})
             else:
-                Valf_final_montaj.objects.filter(id=duplicate_control_finalmontaj(vsn)).update(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(), funye_seri_no=request.POST.dict()['fsn'])
+                Valf_final_montaj.objects.filter(id=duplicate_control_finalmontaj(vsn)).update(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(),funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'])
                 return JsonResponse({'code':201,'remark':"Güncelleme Başarılı!"})
      
     except Exception as err:

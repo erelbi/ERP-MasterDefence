@@ -153,7 +153,6 @@ function eraseCookie(name) {
             url: '/kurlenmegovde',
             data : data,
             success: function (x){
-            console.log(x)
 
             valfler = x;
             resolve(valfler);
@@ -161,7 +160,7 @@ function eraseCookie(name) {
             
             },
             error(err){
-            console.log;(err);
+            alert(err);
             }
             }
         );
@@ -216,34 +215,41 @@ function eraseCookie(name) {
    
    is_emir_valfleri_geldi_mi.then(function(res){
      
-    let parti = []
+    valfler_data=[]
     // console.log("------------<",.isEmpty({res}));
     if ( badEmptyCheck(res) == false ){
    
     for (var i = 0; i < res.length; i++ ){
-         console.log("-----------",res[i].parti)
-         if (parti.includes(res[i].parti) == false &&  res[i].parti != null) { 
-          parti.push(res[i].parti)
+         if (res[i].parti != undefined &&  res[i].parti != null) { 
+           valfler_data.push({
+             id:res[i].id,
+             parti:res[i].parti
+           })
+
          }
          else{
-           console.log("hata")
+           alert("Valf No ve PartiNo atanırken hata ile karşılaşıldı")
            
          }
+
         }
       }
-     
-      console.log("tarihleri_getir",parti)
+      veri = JSON.stringify(valfler_data);
+      let data={
+        veri:veri
+      }
       $.ajax(
           {
             type: "POST",
             url: '/govdektarih',
-            data : {'parti_no':parti,'is_emri':value_gk},
+            // data : {'parti_no':parti,'is_emri':value_gk},
+            data : data,
             success: function (valfler){
                   
               $("#GovdeKurlemeTableId tbody tr").remove();
             
         
-            console.log(valfler)
+            console.log("----------",valfler)
 
             for (var i = 0; i < valfler.length; i++){        
                 parti_no=valfler[i]['partino']
@@ -307,7 +313,6 @@ function eraseCookie(name) {
 
     veri[i]=valfler[i].id
    }
-   console.log(veri)
 
    console.log("veri",veri)
    veri = JSON.stringify(veri);
@@ -337,7 +342,7 @@ function eraseCookie(name) {
               icon: 'success',
               confirmButtonText: 'Tamam'
             }).then(function(){ 
-          location.reload();
+          //location.reload();
           })
           },
                   error(err){

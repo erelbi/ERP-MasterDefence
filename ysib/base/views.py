@@ -82,15 +82,32 @@ def arama(request):
                 aranan = "isemri"
         else:
                 print('bos')
-        print(aranan)
         grup = request.user.grup
         birim = request.user.birim
         testler = Test.objects.filter(tur=q)
+        # valfmontaj=Valf_montaj.objects.all()
+        # valfgovde=Valf_govde.objects.all()
+        # finalmontaj=Valf_final_montaj.objects.all()
+        # fm200=Valf_fm200.objectsobjects.all()
+        print(q)
+        # if q == "valfmontaj":
+        #     uretims = Uretim.objects.filter(tur="kurlenme")
+        # else:
+        #     uretims = Uretim.objects.filter(tur=q)
+        #     print(uretims)
         if q == "valfmontaj":
-            uretims = Uretim.objects.filter(tur="kurlenme")
+             uretims = Valf_montaj.objects.all()
+        elif q == "valfgovde":
+            uretims = Valf_govde.objects.all()
+        elif q == "fm200":
+            uretims = Valf_fm200.objects.all()
+        elif q == "havuztest":
+            uretims = Valf_final_montaj.objects.all()
+        elif q == "valftest":
+            uretims = Valf_test.objects.all()
         else:
-            uretims = Uretim.objects.filter(tur=q)
-            print(uretims)
+             uretims = Uretim.objects.filter(tur=q)
+             print(uretims)
         if emir == "tumu":
                 emirler = Emir.objects.all()
         else:
@@ -259,7 +276,7 @@ def uretimkontrol(request):
                         ust_nipel_no = veris[3]
                         manometre_no = veris[4]
                         basincanahtari_no = veris[5]
-
+                        sibop =  veris[6]
                         print("deneme2")
                          
                         
@@ -267,7 +284,7 @@ def uretimkontrol(request):
                             kayit_tarihi=timezone.now()
                             #kurlenme_bitis=timezone.now()+timezone.timedelta(minutes=10)
 
-                            valf_montaj = Valf_montaj(montaj_personel_id= personel_id, alt_nipel_no=alt_nipel_no,bakir_membran_no=bakir_membran_no,ust_nipel_no=ust_nipel_no,manometre_no=manometre_no,basincanahtari_no=basincanahtari_no,montaj_tarihi=kayit_tarihi)
+                            valf_montaj = Valf_montaj(montaj_personel_id= personel_id, alt_nipel_no=alt_nipel_no,bakir_membran_no=bakir_membran_no,ust_nipel_no=ust_nipel_no,manometre_no=manometre_no,basincanahtari_no=basincanahtari_no,montaj_tarihi=kayit_tarihi,sibop=sibop)
                             valf_montaj.save() 
                            
 
@@ -697,33 +714,38 @@ def pdf(request):
         #     i = v.is_emri
         print("---------------------")
         valf_no = request.GET.get('vsn')
+        Valf_montaj_Data=Valf_montaj.objects.filter(id=Valf.objects.filter(id=valf_no).first().valf_montaj_id).first()
+        Valf_fm200_Data=Valf_fm200.objects.filter(id=Valf.objects.filter(id=valf_no).first().fm200_azot_id).first()
+        Valf_havuz_Data=Valf_havuz.objects.filter(id=Valf.objects.filter(id=valf_no).first().havuz_id).first()
+        Valf_final_Data=Valf_final_montaj.objects.filter(id=Valf.objects.filter(id=valf_no).first().valf_final_montaj_id).first()
+        Emir_Data=Emir.objects.filter(is_emri=i).first()
         valf_final = Valf.objects.filter(id=valf_no).values_list('valf_final_montaj_id',flat=True).first()
         urun_seri_no = Valf_final_montaj.objects.filter(id=valf_final).values_list('urun_seri_no',flat=True).first()
         print("---------------------")   
         valfmontaj = Uretim.objects.filter(tur="kurlenme").filter(is_emri=i).values()
         try:
-            valfmontajPersonel = valfmontaj[0]['personel']
+            valfmontajPersonel = User.objects.filter(id=Valf_montaj_Data.montaj_personel_id).first().username
         except:
             valfmontajPersonel = ''
 
         try:
-            valfmontajTarih = valfmontaj[0]['date']
+            valfmontajTarih = Valf_montaj_Data.montaj_tarihi
         except:
             valfmontajTarih = ''
         try:
-            altnipelno = valfmontaj[0]['alt_nipel_no']
+            altnipelno = Valf_montaj_Data.alt_nipel_no
         except:
             altnipelno = ''
         try:
-            ustnipelno = valfmontaj[0]['ust_nipel_no']
+            ustnipelno = Valf_montaj_Data.ust_nipel_no
         except:
             ustnipelno = ''
         try:
-            switchno = valfmontaj[0]['basincanahtari_no']
+            switchno = Valf_montaj_Data.basincanahtari_no
         except:
             switchno = ''
         try:
-            manometreno = valfmontaj[0]['manometre_no']
+            manometreno = Valf_montaj_Data.manometre_no
         except:
             manometreno = ''
 
@@ -749,33 +771,37 @@ def pdf(request):
 
         fm200 = Uretim.objects.filter(tur="fm200").filter(is_emri=i).values()
         try:
-            fm200Personel = fm200[0]['personel']
+            fm200Personel = User.objects.filter(id=Valf_fm200_Data.fm200_personel_id).first().username
         except:
             fm200Personel = ''
         try:
-            fm200Tarih = fm200[0]['date']
+            fm200Tarih = Valf_fm200_Data.kayit_tarihi
         except:
             fm200Tarih = ''
         try:
-            bosAgirlik = fm200[0]['bos_agirlik']
+            bosAgirlik = Valf_fm200_Data.bos_agirlik
         except:
             bosAgirlik = ''
         try:
-            doluAgirlik = fm200[0]['rekorlu_agirlik']
+            doluAgirlik = Valf_fm200_Data.dolu_agirlik
         except:
             doluAgirlik = ''
         try:
             azot = fm200[0]['azot']
         except:
             azot = ''
+        try:
+            bar = Valf_fm200_Data.bar
+        except:
+            bar = ''
 
         havuztest = Uretim.objects.filter(tur="havuztest").filter(is_emri=i).values()
         try:
-            havuztestPersonel = havuztest[0]['personel']
+            havuztestPersonel = User.objects.filter(id=Valf_havuz_Data.havuz_personel_id).first().username
         except:
             havuztestPersonel = ''
         try:
-            havuztestTarih = havuztest[0]['date']
+            havuztestTarih = Valf_havuz_Data.kayit_tarihi
         except:
             havuztestTarih = ''
 
@@ -791,15 +817,23 @@ def pdf(request):
 
         emir = Emir.objects.filter(is_emri=i).values()
         try:
-            membranTipi = emir[0]['valf_turu']
+            membranTipi = Emir_Data.valf_turu
         except:
             membranTipi = ''
         try:
-            ventilTipi = emir[0]['emniyet_ventil_turu']
+            ventilTipi = Emir_Data.emniyet_ventil_turu
         except:
             ventilTipi = ''
+        try:
+            tugovdetipi= Emir_Data.tup_govde_turu
+        except:
+            tugovdetipi= ''
+        try:
+            siboplotno = Valf_montaj_Data.sibop
+        except:
+            siboplotno = ''
 
-        print(valftestPersonel)
+        print(valftestPersonel,Emir_Data.emniyet_ventil_turu)
         veri = "veri"
         html_string = render_to_string('external/pdf-template.html', {'veri': veri, "qr": urun_seri_no,
             'valfmontajPersonel': valfmontajPersonel, 'valfmontajTarih':valfmontajTarih,
@@ -810,7 +844,7 @@ def pdf(request):
             'havuztestPersonel': havuztestPersonel, 'havuztestTarih': havuztestTarih,
             'finalmontajPersonel': finalmontajPersonel, 'finalmontajTarih': finalmontajTarih,
             'altnipelno': altnipelno, 'ustnipelno': ustnipelno, 'switchno': switchno,'manometreno': manometreno,
-            'is_emri': i,'membranTipi': membranTipi,'ventilTipi': ventilTipi,'urunserino':urun_seri_no,
+            'is_emri': i,'membranTipi': membranTipi,'ventilTipi': ventilTipi,'urunserino':urun_seri_no,'bar':bar,'tugovdetipi':tugovdetipi,'siboplotno':siboplotno
          }, request=request)
 
         html = HTML(string=html_string, base_url=request.build_absolute_uri())
@@ -922,6 +956,7 @@ def kontrolEt(request):
     if request.method == 'POST':
         tur = request.POST['tur']
         veri = request.POST['veri']
+        isemri =  request.POST['isemri']
         t = Test.objects.filter(tur=tur)
         r = "NO"
         if(tur == 'altnipel'):
@@ -990,6 +1025,16 @@ def kontrolEt(request):
                         r = ('OK')
                     else:
                         r = ('NO')
+                else:
+                    r = ('NO')
+            except:
+                r = "NO"
+        if(tur == 'sibop'):
+            print(tur,veri,t.values_list('lot_no',flat=True))
+            t = Test.objects.filter(tur=tur)
+            try:
+                if(int(veri) in t.values_list('lot_no',flat=True)):
+                    r = ('OK')
                 else:
                     r = ('NO')
             except:

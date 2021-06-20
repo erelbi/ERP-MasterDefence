@@ -68,7 +68,6 @@ class Test(models.Model):
     patlama_basinci = models.CharField(max_length=10,blank=True, null=True)
     pdf_dosyasi = models.TextField(max_length=10000000000,null=True,blank=True)
     test_tarihi = models.DateTimeField(default=timezone.now,blank=True, null=True)
-
     def __str__(self):
         return str(self.baslangic_seri_no)
 
@@ -154,6 +153,7 @@ class Valf_montaj(models.Model):
     kurlenme_parti_no = models.PositiveIntegerField(null=True)
     kurlenme_baslangic_tarihi = models.DateTimeField( blank=True, null=True)
     kurlenme_bitis_tarihi = models.DateTimeField( blank=True, null=True)
+    sibop = models.PositiveIntegerField(null=True,default=1)
 
 
 class Valf_test(models.Model):
@@ -176,6 +176,7 @@ class Valf_govde(models.Model):
     govde_kurlenme_parti_no = models.PositiveIntegerField(null=True)
     govde_kurlenme_baslangic_tarihi = models.DateTimeField( blank=True, null=True)
     govde_kurlenme_bitis_tarihi = models.DateTimeField( blank=True, null=True)
+    vsn=models.PositiveIntegerField(null=True)#bunu kürlenme için  koyduk
 
 class Valf_fm200(models.Model):
     #valf=models.ForeignKey(Valf,on_delete=models.DO_NOTHING)
@@ -192,6 +193,7 @@ class Valf_fm200(models.Model):
     fm200_kurlenme_bitis_tarihi = models.DateTimeField( blank=True, null=True)
     fm200_personel=models.ForeignKey(User,related_name='fm200_personel', on_delete=models.DO_NOTHING)
     fm200_kurlenme_personel =models.ForeignKey(User,related_name='fm200_kurlenme_personel',null=True,on_delete=models.DO_NOTHING) 
+    vsn=models.PositiveIntegerField(null=True)#bunu kürlenme için  koyduk
 
 class Valf_havuz(models.Model):
     #valf=models.ForeignKey(Valf,on_delete=models.DO_NOTHING)
