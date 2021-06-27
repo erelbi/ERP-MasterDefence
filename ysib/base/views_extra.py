@@ -680,12 +680,11 @@ def havuztestcontrol(request):
     ### burda nerden kontrol edeceğim&Valf  id den aldım
     try:
         check_id = Valf.objects.filter(id=request.POST.dict()['veri']).values_list('fm200_azot_id',flat=True).first()
+        print(check_id)
         if check_id is None:
-            print("None")
             return JsonResponse({'code':400,'remark':'Seri No bulunumadı!'})
         else:
             date_value = Valf_fm200.objects.filter(id=check_id).first().fm200_kurlenme_bitis_tarihi
-            print(date_value)
             if date_value<timezone.now():
                 print("can not finished")
                 return  JsonResponse({'code':200,'remark':'Kürlenmesi tamamlanmış'})
@@ -721,13 +720,13 @@ def finalmontajsave(request):
             vsn = request.POST.dict()['vsn']
             valf_main = Valf.objects.get(id=int(vsn))
             if duplicate_control_finalmontaj(int(vsn)) is None:
-                final_montaj=Valf_final_montaj(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(), funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'])
+                final_montaj=Valf_final_montaj(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(), funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'],personel_id=request.user.id)
                 final_montaj.save()
                 valf_main.valf_final_montaj_id = final_montaj.id
                 valf_main.save()
                 return JsonResponse({'code':200,'remark':"Kayıt Başarılı"})
             else:
-                Valf_final_montaj.objects.filter(id=duplicate_control_finalmontaj(vsn)).update(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(),funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'])
+                Valf_final_montaj.objects.filter(id=duplicate_control_finalmontaj(vsn)).update(urun_seri_no=request.POST.dict()['etiket'], funye_seri_omaj=request.POST.dict()['fso'], basinc_anahtari_omaj=request.POST.dict()['bao'], kayit_tarihi=timezone.now(),funye_seri_no=request.POST.dict()['fsn'],agirlik=request.POST.dict()['agr'],personel_id=request.user.id)
                 return JsonResponse({'code':201,'remark':"Güncelleme Başarılı!"})
      
     except Exception as err:

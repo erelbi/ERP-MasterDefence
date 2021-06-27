@@ -254,22 +254,32 @@
       <th data-field="ust_nipel_no" data-filter-control="select" data-sortable="true">Üst Nipel No</th>
       <th data-field="manometre_no" data-filter-control="select" data-sortable="true">Test Manometre No</th>
       <th data-field="basincanahtari_no" data-filter-control="select" data-sortable="true">Basınç Anah. No</th>
+      <th data-field="sibop" data-filter-control="select" data-sortable="true">Sibop</th>
+      <th data-field="kurlenme_personel" data-filter-control="select" data-sortable="true">Kürlenme Personel</th>
+      <th data-field="kurlenme_baslangıc_tarih" data-filter-control="select" data-sortable="true">Kürlenme Başlangıç Tarih</th>
+      <th data-field="kurlenme_bitis_tarihi" data-filter-control="select" data-sortable="true">Kürlenme Bitiş Tarih</th>
+      <th data-field="kurlenme_parti_no" data-filter-control="select" data-sortable="true">Kürlenme Parti No</th>
       <th data-field="personel" data-filter-control="select" data-sortable="true">Personel</th>
-      <th data-field="date" data-filter-control="select" data-sortable="true">Tarih</th>
+      <th data-field="date" data-filter-control="select" data-sortable="true">Montaj Tarihi</th>
     </tr>
   </thead>
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{{ uretim.is_emri }}</td>
-            <td>{{ uretim.vsn }}</td>
+            <td>{%  isemri uretim.id "valfMontaj" %}</td>
+            <td>{% valf_no uretim.id  "valfMontaj" %}</td>
             <td>{{ uretim.alt_nipel_no }}</td>
             <td>{{ uretim.bakir_membran_no }}</td>
             <td>{{ uretim.ust_nipel_no }}</td>
             <td>{{ uretim.manometre_no }}</td>
             <td>{{ uretim.basincanahtari_no }}</td>
-            <td>{{ uretim.personel }}</td>
-            <td>{{ uretim.date }}</td>
+            <td>{{ uretim.sibop }}</td>
+            <td>{% user_name  uretim.kurlenme_personel_id %}</td>
+            <td>{{ uretim.kurlenme_baslangic_tarihi }}</td>
+            <td>{{ uretim.kurlenme_bitis_tarihi }}</td>
+            <td>{{ uretim.kurlenme_parti_no }}</td>
+            <td>{% user_name  uretim.montaj_personel_id %}</td>
+            <td>{{ uretim.montaj_tarihi }}</td>
           </tr>
     {% endfor %}
   </tbody>
@@ -292,8 +302,8 @@
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{%  isemri uretim.id %}</td>
-            <td>{% valf_no uretim.id %}</td>
+            <td>{%  isemri uretim.id "valfTest" %}</td>
+            <td>{% valf_no uretim.id  "valfTest" %}</td>
             <td>{{ uretim.acma }}</td>
             <td>{{ uretim.kapama }}</td>
             <td>{{ uretim.uygun }}</td>
@@ -310,11 +320,15 @@
   <thead>
     <tr>
       <th data-field="is_emri" data-filter-control="select" data-sortable="true">İş Emri No</th>
+      <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf Seri No</th>
       <th data-field="tork_degeri" data-filter-control="select" data-sortable="true">Tork Değeri</th>
       <th data-field="uygunluk" data-filter-control="select">Uygunluk</th>
       <th data-field="sebep" data-filter-control="select" data-sortable="true">Sebep</th>
-      <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf Seri No</th>
       <th data-field="tsn" data-filter-control="select" data-sortable="true">Tüp Seri No</th>
+      <th data-field="kurleme personel" data-filter-control="select" data-sortable="true">Kürleme Personel</th>
+      <th data-field="kurleme başlangıç tarihi" data-filter-control="select" data-sortable="true">Kürleme Başlangıç Tarihi</th>
+      <th data-field="kurleme bitiş tarihi" data-filter-control="select" data-sortable="true">Kürleme Bitiş Tarihi</th>
+      <th data-field="kurleme parti no" data-filter-control="select" data-sortable="true">Kürleme Parti No</th>
       <th data-field="personel" data-filter-control="select" data-sortable="true">Personel</th>
       <th data-field="date" data-filter-control="select" data-sortable="true">Tarih</th>
     </tr>
@@ -322,14 +336,17 @@
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{{ uretim.is_emri }}</td>
-            <td>{{ uretim.tork_degeri }}</td>
+            <td>{%  isemri uretim.id "valfGovde" %}</td>
+            <td>{% valf_no uretim.id  "valfGovde" %}</td>
+            <td>{{ uretim.tork }}</td>
             <td>{{ uretim.uygunluk }}</td>
             <td>{{ uretim.sebep }}</td>
-            <td>{{ uretim.vsn }}</td>
-            <td>{{ uretim.tsn }}</td>
-            <td>{{ uretim.personel }}</td>
-            <td>{{ uretim.date }}</td>
+            <td>{% user_name uretim.govde_kurlenme_personel_id %}</td>
+            <td>{{ uretim.govde_kurlenme_baslangic_tarihi }}</td>
+            <td>{{ uretim.govde_kurlenme_bitis_tarihi }}</td>
+            <td>{{ uretim.govde_kurlenme_parti_no }}</td>
+            <td>{% user_name uretim.govde_personel_id %}</td>
+            <td>{{ uretim.govde_tarihi }}</td>
           </tr>
     {% endfor %}
   </tbody>
@@ -342,9 +359,13 @@
       <th data-field="is_emri" data-filter-control="select" data-sortable="true">İş Emri No</th>
       <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf Seri No</th>
       <th data-field="bos_agirlik" data-filter-control="select">Boş Ağırlık</th>
-      <th data-field="rekorlu_agirlik" data-filter-control="select" data-sortable="true">Rekorlu Ağırlık</th>
+      <th data-field="rekorlu_agirlik" data-filter-control="select" data-sortable="true">Dolu Ağırlık</th>
       <th data-field="fm200" data-filter-control="select" data-sortable="true">FM200 Dolum Miktarı</th>
-      <th data-field="azot" data-filter-control="select" data-sortable="true">Azot Dolum Miktarı</th>
+      <th data-field="azot" data-filter-control="select" data-sortable="true">Bar</th>
+      <th data-field="kurleme personel" data-filter-control="select" data-sortable="true">Kürleme Personel</th>
+      <th data-field="kurleme başlangıç tarihi" data-filter-control="select" data-sortable="true">Kürleme Başlangıç Tarihi</th>
+      <th data-field="kurleme bitiş tarihi" data-filter-control="select" data-sortable="true">Kürleme Bitiş Tarihi</th>
+      <th data-field="kurleme parti no" data-filter-control="select" data-sortable="true">Kürleme Parti No</th>
       <th data-field="personel" data-filter-control="select" data-sortable="true">Personel</th>
       <th data-field="date" data-filter-control="select" data-sortable="true">Tarih</th>
     </tr>
@@ -352,14 +373,18 @@
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{{ uretim.is_emri }}</td>
-            <td>{{ uretim.vsn }}</td>
+            <td>{%  isemri uretim.id "fm200" %}</td>
+            <td>{% valf_no uretim.id  "fm200" %}</td>
             <td>{{ uretim.bos_agirlik }}</td>
-            <td>{{ uretim.rekorlu_agirlik }}</td>
+            <td>{{ uretim.dolu_agirlik }}</td>
             <td>{{ uretim.fm200 }}</td>
-            <td>{{ uretim.azot }}</td>
-            <td>{{ uretim.personel }}</td>
-            <td>{{ uretim.date }}</td>
+            <td>{{ uretim.bar }}</td>
+            <td>{% user_name uretim.fm200_kurlenme_personel_id %}</td>
+            <td>{{ uretim.fm200_kurlenme_baslangic_tarihi }}</td>
+            <td>{{ uretim.fm200_kurlenme_bitis_tarihi }}</td>
+            <td>{{ uretim.fm200_parti_no }}</td>
+            <td>{% user_name uretim.fm200_personel_id %}</td>
+            <td>{{ uretim.kayit_tarihi }}</td>
           </tr>
     {% endfor %}
   </tbody>
@@ -369,10 +394,11 @@
   <thead>
     <tr>
       <th data-field="is_emri" data-filter-control="select" data-sortable="true">İş Emri No</th>
-      <th data-field="tork_degeri" data-filter-control="select" data-sortable="true">Tork Değeri</th>
+      <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf No</th>
       <th data-field="uygunluk" data-filter-control="select">Uygunluk</th>
       <th data-field="sebep" data-filter-control="select" data-sortable="true">Sebep</th>
-      <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf Seri No</th>
+      <th data-field="tcs" data-filter-control="select" data-sortable="true">Tüp Cidar Sıcaklığı</th>
+      <th data-field="tb" data-filter-control="select" data-sortable="true">Tüp Basınç</th>
       <th data-field="personel" data-filter-control="select" data-sortable="true">Personel</th>
       <th data-field="date" data-filter-control="select" data-sortable="true">Tarih</th>
     </tr>
@@ -380,13 +406,44 @@
   <tbody>
     {% for uretim in uretims %}
           <tr>
-            <td>{{ uretim.is_emri }}</td>
-            <td>{{ uretim.tork_degeri }}</td>
+            <td>{%  isemri uretim.id "havuz" %}</td>
+            <td>{% valf_no uretim.id  "havuz" %}</td>
             <td>{{ uretim.uygunluk }}</td>
             <td>{{ uretim.sebep }}</td>
-            <td>{{ uretim.vsn }}</td>
-            <td>{{ uretim.personel }}</td>
+            <td>{{ uretim.tup_cidar_sicaklik }}</td>
+            <td>{{ uretim.tup_basinc }}</td>
+            <td>{% user_name uretim.havuz_personel_id %}</td>
             <td>{{ uretim.date }}</td>
+          </tr>
+    {% endfor %}
+  </tbody>
+{% endif %}
+{% if aranan == "finalmontaj" %}
+  <thead>
+    <tr>
+      <th data-field="is_emri" data-filter-control="select" data-sortable="true">İş Emri No</th>
+      <th data-field="vsn" data-filter-control="select" data-sortable="true">Valf No</th>
+      <th data-field="urunserino" data-filter-control="select">Ürün Seri No</th>
+      <th data-field="fsn" data-filter-control="select" data-sortable="true">Fünye Seri No</th>
+      <th data-field="fso" data-filter-control="select" data-sortable="true">Fünye Seri Omaj</th>
+      <th data-field="basıncanahtari" data-filter-control="select" data-sortable="true">Basınç Anahtarı Omaj</th>
+      <th data-field="agirlik" data-filter-control="select" data-sortable="true">Ağırlık</th>
+      <th data-field="personel" data-filter-control="select" data-sortable="true">Personel</th>
+      <th data-field="date" data-filter-control="select" data-sortable="true">Tarih</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for uretim in uretims %}
+          <tr>
+            <td>{%  isemri uretim.id "finalMontaj" %}</td>
+            <td>{% valf_no uretim.id  "finalMontaj" %}</td>
+            <td>{{ uretim.urun_seri_no }}</td>
+            <td>{{ uretim.funye_seri_no }}</td>
+            <td>{{ uretim.funye_seri_omaj }}</td>
+            <td>{{ uretim.basinc_anahtari_omaj }}</td>
+            <td>{{ uretim.agirlik }}</td>
+            <td>{% user_name uretim.personel_id %}</td>
+            <td>{{ uretim.kayit_tarihi }}</td>
           </tr>
     {% endfor %}
   </tbody>

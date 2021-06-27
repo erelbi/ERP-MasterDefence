@@ -102,9 +102,9 @@ def arama(request):
         elif q == "fm200":
             uretims = Valf_fm200.objects.all()
         elif q == "havuztest":
+            uretims = Valf_havuz.objects.all()
+        elif q == "finalmontaj":
             uretims = Valf_final_montaj.objects.all()
-        elif q == "valftest":
-            uretims = Valf_test.objects.all()
         else:
              uretims = Uretim.objects.filter(tur=q)
              print(uretims)
@@ -701,6 +701,14 @@ def passwordreset(request):
                 return HttpResponse('parola değiştirildi')
         return HttpResponse('bir hata var')
 
+def get_first_and_lastname(username):
+    try:
+        first_name=User.objects.filter(username=username).first().first_name
+        last_name=User.objects.filter(username=username).first().last_name
+        return "{} {}".format(first_name,last_name)
+    except:
+        return 'isim soyisim'
+
 
 @csrf_exempt
 def pdf(request):
@@ -718,13 +726,14 @@ def pdf(request):
         Valf_fm200_Data=Valf_fm200.objects.filter(id=Valf.objects.filter(id=valf_no).first().fm200_azot_id).first()
         Valf_havuz_Data=Valf_havuz.objects.filter(id=Valf.objects.filter(id=valf_no).first().havuz_id).first()
         Valf_final_Data=Valf_final_montaj.objects.filter(id=Valf.objects.filter(id=valf_no).first().valf_final_montaj_id).first()
+        Valf_test_Data=Valf_test.objects.filter(id=Valf.objects.filter(id=valf_no).first().valf_test_id).first()
+        Valf_govde_Data=Valf_govde.objects.filter(id=Valf.objects.filter(id=valf_no).first().valf_govde_id).first()
         Emir_Data=Emir.objects.filter(is_emri=i).first()
         valf_final = Valf.objects.filter(id=valf_no).values_list('valf_final_montaj_id',flat=True).first()
         urun_seri_no = Valf_final_montaj.objects.filter(id=valf_final).values_list('urun_seri_no',flat=True).first()
         print("---------------------")   
-        valfmontaj = Uretim.objects.filter(tur="kurlenme").filter(is_emri=i).values()
         try:
-            valfmontajPersonel = User.objects.filter(id=Valf_montaj_Data.montaj_personel_id).first().username
+            valfmontajPersonel = get_first_and_lastname(User.objects.filter(id=Valf_montaj_Data.montaj_personel_id).first().username)
         except:
             valfmontajPersonel = ''
 
@@ -749,29 +758,36 @@ def pdf(request):
         except:
             manometreno = ''
 
-        valftest = Uretim.objects.filter(tur="valftest").filter(is_emri=i).values()
+      
         try:
-            valftestPersonel = valftest[0]['personel']
+            valftestPersonel = get_first_and_lastname(User.objects.filter(id=Valf_test_Data.test_personel_id).first().username)
         except:
             valftestPersonel = ''
         try:
-            valftestTarih = valftest[0]['date']
+            valftestTarih = Valf_test_Data.test_tarihi
         except:
             valftestTarih = ''
-
-        valfgovde = Uretim.objects.filter(tur="valfgovde").filter(is_emri=i).values()
         try:
-            valfgovdePersonel = valfgovde[0]['personel']
+            valfTestUygun = 'Uygun' if Valf_test_Data.uygun == True else 'Uygun Değil'
+        except:
+            valfTestUygun = Valf_test_Data.uygun
+
+       
+        try:
+            valfgovdePersonel = get_first_and_lastname(User.objects.filter(id=Valf_govde_Data.govde_personel_id).first().username)
         except:
             valfgovdePersonel = ''
         try:
-            valfgovdeTarih = valfgovde[0]['date']
+            valfgovdeTarih = Valf_govde_Data.govde_tarihi
         except:
             valfgovdeTarih = ''
-
-        fm200 = Uretim.objects.filter(tur="fm200").filter(is_emri=i).values()
         try:
-            fm200Personel = User.objects.filter(id=Valf_fm200_Data.fm200_personel_id).first().username
+            valfGovdeUygun = 'Uygun' if  Valf_govde_Data.uygunluk == True else 'Uygun Değil'
+        except:
+            valfGovdeUygun = ''
+
+        try:
+            fm200Personel = get_first_and_lastname(User.objects.filter(id=Valf_fm200_Data.fm200_personel_id).first().username)
         except:
             fm200Personel = ''
         try:
@@ -786,36 +802,38 @@ def pdf(request):
             doluAgirlik = Valf_fm200_Data.dolu_agirlik
         except:
             doluAgirlik = ''
-        try:
-            azot = fm200[0]['azot']
-        except:
-            azot = ''
+        # try:  Duruma Göre sonradan eklenebilir diye silmiyoruz!
+        #     azot = fm200[0]['azot']
+        # except:
+        #     azot = ''
         try:
             bar = Valf_fm200_Data.bar
         except:
             bar = ''
-
-        havuztest = Uretim.objects.filter(tur="havuztest").filter(is_emri=i).values()
+        
         try:
-            havuztestPersonel = User.objects.filter(id=Valf_havuz_Data.havuz_personel_id).first().username
+            havuztestPersonel = get_first_and_lastname(User.objects.filter(id=Valf_havuz_Data.havuz_personel_id).first().username)
         except:
             havuztestPersonel = ''
         try:
             havuztestTarih = Valf_havuz_Data.kayit_tarihi
         except:
             havuztestTarih = ''
-
-        finalmontaj = Uretim.objects.filter(tur="finalmontaj").filter(is_emri=i).values()
         try:
-            finalmontajPersonel = finalmontaj[0]['personel']
+            havuzTestUygun = 'Uygun' if Valf_havuz_Data.uygunluk == True else 'Uygun Değil' 
+        except:
+            havuzTestUygun = ''
+
+        
+        try:
+            finalmontajPersonel = get_first_and_lastname(User.objects.filter(id=Valf_final_Data.personel_id).first().username)
         except:
             finalmontajPersonel = ''
         try:
-            finalmontajTarih = finalmontaj[0]['date']
+            finalmontajTarih = Valf_final_Data.kayit_tarihi
         except:
             finalmontajTarih = ''
 
-        emir = Emir.objects.filter(is_emri=i).values()
         try:
             membranTipi = Emir_Data.valf_turu
         except:
@@ -836,11 +854,11 @@ def pdf(request):
         print(valftestPersonel,Emir_Data.emniyet_ventil_turu)
         veri = "veri"
         html_string = render_to_string('external/pdf-template.html', {'veri': veri, "qr": urun_seri_no,
-            'valfmontajPersonel': valfmontajPersonel, 'valfmontajTarih':valfmontajTarih,
-            'valftestPersonel': valftestPersonel, 'valftestTarih': valftestTarih,
-            'valfgovdePersonel': valftestPersonel, 'valfgovdeTarih': valfgovdeTarih,
+            'valfmontajPersonel': valfmontajPersonel, 'valfmontajTarih':valfmontajTarih,'valfgovdePersonel':valfgovdePersonel,
+            'valftestPersonel': valftestPersonel, 'valftestTarih': valftestTarih,'valfTestUygun':valfTestUygun,'havuzTestUygun':havuzTestUygun,
+            'valfgovdePersonel': valftestPersonel, 'valfgovdeTarih': valfgovdeTarih,'valfGovdeUygun':valfGovdeUygun,'valfMontajUygun':"Uygun*",'fm200Uygun':"Uygun*",'finalMontajUygun':"Uygun*",
             'fm200Personel': fm200Personel, 'fm200Tarih': fm200Tarih,
-            'bosAgirlik' : bosAgirlik, 'doluAgirlik' : doluAgirlik, 'azot' : azot,
+            'bosAgirlik' : bosAgirlik, 'doluAgirlik' : doluAgirlik,
             'havuztestPersonel': havuztestPersonel, 'havuztestTarih': havuztestTarih,
             'finalmontajPersonel': finalmontajPersonel, 'finalmontajTarih': finalmontajTarih,
             'altnipelno': altnipelno, 'ustnipelno': ustnipelno, 'switchno': switchno,'manometreno': manometreno,

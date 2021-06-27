@@ -209,7 +209,7 @@ class Valf_havuz(models.Model):
 
 class Valf_final_montaj(models.Model):
     #valf=models.ForeignKey(Valf,on_delete=models.DO_NOTHING)
-    #personel=models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    personel=models.ForeignKey(User,on_delete=models.DO_NOTHING)
     kayit_tarihi=models.DateTimeField( blank=True, null=True)
     agirlik = models.PositiveIntegerField(null=True)
     urun_seri_no =models.CharField(max_length=12,null=True)

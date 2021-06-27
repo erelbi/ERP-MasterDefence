@@ -117,51 +117,60 @@
 				<td>Valf Montaj</td>
 				<td>{{ valfmontajTarih }}</td>
 				<td>{{ valfmontajPersonel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ valfMontajUygun }}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td>Valf Kürlenme</td>
 				<td>{{ valfmontajTarih }}</td>
 				<td>{{ valfmontajPersonel }}</td>
 				<td><img src="{% static 'img/close.svg' %}"></td>
-			</tr>
+			</tr> -->
 			<tr>
 				<td>Valf Sızdırmazlık Test</td>
 				<td>{{ valftestTarih }}</td>
 				<td>{{ valftestPersonel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ valfTestUygun}}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
 			<tr>
 				<td>Valf Tüp Gövde Montaj</td>
 				<td>{{ valfgovdeTarih }}</td>
 				<td>{{ valfgovdePersonel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ valfGovdeUygun }}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
 			<tr>
 				<td>Dolum </td>
 				<td>{{ fm200Tarih }}</td>
 				<td>{{ fm200Personel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ fm200Uygun }}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
 			<tr>
 				<td>71 Derece Sızdırmazlık Testi</td>
-				<td>{{ finalmontajTarih }}</td>
-				<td>{{ finalmontajPersonel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ havuztestTarih }}</td>
+				<td>{{ havuztestPersonel }}</td>
+				<td>{{ havuzTestUygun  }}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
 			<tr>
 				<td>Final Montaj</td>
 				<td>{{ finalmontajTarih }}</td>
 				<td>{{ finalmontajPersonel }}</td>
-				<td><img src="{% static 'img/close.svg' %}"></td>
+				<td>{{ finalMontajUygun }}</td>
+				<!-- <td><img src="{% static 'img/close.svg' %}"></td> -->
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td>Final Kontrol</td>
 				<td>{{ finalmontajTarih }}</td>
 				<td>{{ finalmontajPersonel }}</td>
 				<td><img src="{% static 'img/close.svg' %}"></td>
-			</tr>
+			</tr> -->
 		</tbody>
 	</table>
+	<div style="text-align: center;">
+	<p><small>* Varsayılan Değer Uygundur!</small></p>
+	</div>
 </body>
 </html>
